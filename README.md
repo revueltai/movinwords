@@ -23,9 +23,9 @@ Add the base styles to your CSS file.
 
 ##### With a bundler
 ```js
-import Movinwords from 'movinwords';
+import movinwords from 'movinwords';
 
-const sentence = new Movinwords({
+const sentence = new movinwords({
   el: '.my-sentence'
 })
 ```
@@ -35,7 +35,7 @@ const sentence = new Movinwords({
 <script src="movinwords.min.js"></script>
 <script>
   (function () {
-    const sentence = new Movinwords({
+    const sentence = new movinwords({
       el: '.my-sentence'
     });
   })();
@@ -72,7 +72,7 @@ To highlight words you need to pass a `highlight` object as part of the instance
 <h1 class="my-sentence">Hello world! I am an animated sentence.</h1>
 ```
 ```js
-new Movinwords({
+new movinwords({
   el: '.my-sentence',
   highlight: {
    classname: 'highlight',
