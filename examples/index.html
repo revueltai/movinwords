@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <title>movinwords</title>
+    <script src="dist/movinwords.min.js"></script>
+    <link rel="stylesheet" href="dist/movinwords.min.css">
+    <style media="screen">
+      *, *:before, *:after {
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: black;
+        font-family: Arial, sans-serif;
+        color: white;
+        font-weight: bold;
+        font-size: 32px;
+      }
+
+      .wrapper {
+        padding: 20px 40px;
+      }
+
+      .highlight {
+        color: #FFCC00;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <p class="example1">
+        Example 1: The sentence just fades in.
+      </p>
+
+      <p data-example2>
+        Example 2: Same as example1, but using data-attribute instead of a classname.
+      </p>
+
+      <p class="example3">
+        Example 3: The sentence fades in with delay and duration applied.
+      </p>
+
+      <p class="example4">
+        Example 4: Same as example3, but with words highlighted.
+      </p>
+
+      <p class="example5">
+        Example 5: Same as example4, with words highlighted and transitions.
+      </p>
+    </div>
+
+    <script type="text/javascript">
+      window.addEventListener('load', () => {
+
+        // Example 1
+        new movinwords({
+          el: '.example1'
+        })
+
+        // Example 2
+        new movinwords({
+          el: '[data-example2]'
+        })
+
+        // Example 3
+        new movinwords({
+          el: '.example3',
+          duration: 500,
+          delay: 500
+        })
+
+        // Example 4
+        new movinwords({
+          el: '.example4',
+          duration: 500,
+          delay: 500,
+          highlight: {
+           classname: 'highlight',
+           tag: 'strong',
+           matches: ['words', 'highlighted.']
+          }
+        })
+
+        // Example 5
+        new movinwords({
+          el: '.example5',
+          duration: 500,
+          delay: 500,
+          transition: 'revealInBottom',
+          highlight: {
+           classname: 'highlight',
+           tag: 'strong',
+           matches: ['words', 'highlighted']
+          }
+        })
+      })
+    </script>
+  </body>
+</html>
