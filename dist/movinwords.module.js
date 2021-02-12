@@ -1,5 +1,5 @@
 /*
- * movinwords v1.0.0 - Add animation to your words and sentences tags.
+ * movinwords v1.0.1 - Add animation to your words and sentences tags.
  * Copyright (c) 2021 Ignacio Revuelta
  */
 'use strict';
@@ -34,10 +34,11 @@ var movinwords = function () {
       duration: 1000,
       delay: 0,
       transition: 'fadeIn',
+      wordSpacing: null,
       highlight: {
         classname: 'highlight',
         tag: 'strong',
-        matches: []
+        words: []
       }
     }, opts);
 
@@ -59,6 +60,7 @@ var movinwords = function () {
         _this.createAndAppendLetterTags(sentence);
 
         setTimeout(function () {
+          sentence.style.setProperty('--mw-word-spacing', _this.getWordSpacing(sentence));
           sentence.style.setProperty('--mw-duration', _this.options.duration + 'ms');
           sentence.style.setProperty('--mw-delay', _this.options.delay + 'ms');
           sentence.classList.add('--visible');
@@ -99,7 +101,7 @@ var movinwords = function () {
   }, {
     key: 'isHighlightedWord',
     value: function isHighlightedWord(word) {
-      var highlightedWordsArr = this.options.highlight.matches;
+      var highlightedWordsArr = this.options.highlight.words;
       return highlightedWordsArr && !this.isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word);
     }
   }, {
@@ -144,6 +146,15 @@ var movinwords = function () {
           }
         }
       }
+    }
+  }, {
+    key: 'getWordSpacing',
+    value: function getWordSpacing(sentence) {
+      if (this.options.wordSpacing) {
+        return this.options.wordSpacing;
+      }
+
+      return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4;
     }
   }, {
     key: 'getWordsArray',

@@ -10,10 +10,11 @@ class movinwords {
       duration: 1000,
       delay: 0,
       transition: 'fadeIn',
+      wordSpacing: null,
       highlight: {
        classname: 'highlight',
        tag: 'strong',
-       matches: []
+       words: []
      },
       ...opts
     }
@@ -32,6 +33,7 @@ class movinwords {
       this.createAndAppendLetterTags(sentence)
 
       setTimeout(() => {
+        sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence))
         sentence.style.setProperty('--mw-duration', `${this.options.duration}ms`)
         sentence.style.setProperty('--mw-delay', `${this.options.delay}ms`)
         sentence.classList.add('--visible')
@@ -65,7 +67,7 @@ class movinwords {
   }
 
   isHighlightedWord (word) {
-    const highlightedWordsArr = this.options.highlight.matches
+    const highlightedWordsArr = this.options.highlight.words
     return (highlightedWordsArr && !this.isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
   }
 
@@ -87,6 +89,14 @@ class movinwords {
     for (const tag of tagsArr) {
       el.appendChild(tag)
     }
+  }
+
+  getWordSpacing (sentence) {
+    if (this.options.wordSpacing) {
+      return this.options.wordSpacing
+    }
+
+    return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
   }
 
   getWordsArray (sentence) {
