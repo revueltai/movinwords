@@ -24,15 +24,19 @@ var movinwords = function () {
 
     _classCallCheck(this, movinwords);
 
+    this.sentences = null;
+    this.started = false;
+    this.visible = '--v';
     this.classNames = {
       base: 'mw',
-      word: 'mw-word',
-      letter: 'mw-letter'
+      word: 'mw-w',
+      letter: 'mw-l'
     };
-
     this.options = _extends({
+      autostart: true,
       duration: 1000,
       delay: 0,
+      offset: 20,
       transition: 'fadeIn',
       wordSpacing: null,
       highlight: {
@@ -42,29 +46,46 @@ var movinwords = function () {
       }
     }, opts);
 
-    this.parseSentences();
+    this.getSentences();
+
+    if (this.options.autostart) {
+      this.start();
+    }
   }
 
   _createClass(movinwords, [{
-    key: 'parseSentences',
-    value: function parseSentences() {
+    key: 'start',
+    value: function start() {
+      if (!this.started) {
+        this.started = true;
+        this.parseSentences();
+      }
+    }
+  }, {
+    key: 'getSentences',
+    value: function getSentences() {
       var _this = this;
 
-      var sentences = document.querySelectorAll(this.options.el);
-
-      sentences.forEach(function (sentence) {
+      this.sentences = document.querySelectorAll(this.options.el);
+      this.sentences.forEach(function (sentence) {
         sentence.classList.add(_this.classNames.base);
         sentence.classList.add(_this.options.transition);
+      });
+    }
+  }, {
+    key: 'parseSentences',
+    value: function parseSentences() {
+      var _this2 = this;
 
-        _this.createAndAppendWordTags(sentence);
-        _this.createAndAppendLetterTags(sentence);
+      this.sentences.forEach(function (sentence) {
+        _this2.setCSSVariables(sentence);
+
+        _this2.createAndAppendWordTags(sentence);
+        _this2.createAndAppendLetterTags(sentence);
 
         setTimeout(function () {
-          sentence.style.setProperty('--mw-word-spacing', _this.getWordSpacing(sentence));
-          sentence.style.setProperty('--mw-duration', _this.options.duration + 'ms');
-          sentence.style.setProperty('--mw-delay', _this.options.delay + 'ms');
-          sentence.classList.add('--visible');
-          delete sentence.dataset[_this.classNames.base];
+          sentence.classList.add(_this2.visible);
+          delete sentence.dataset[_this2.classNames.base];
         }, 500);
       });
     }
@@ -77,13 +98,13 @@ var movinwords = function () {
   }, {
     key: 'createAndAppendLetterTags',
     value: function createAndAppendLetterTags(sentence) {
-      var _this2 = this;
+      var _this3 = this;
 
       var words = sentence.querySelectorAll('.' + this.classNames.word);
 
       words.forEach(function (word, index) {
-        var letterTagsArr = _this2.createLetterTags(word, index + 1);
-        _this2.appendTags(word, letterTagsArr);
+        var letterTagsArr = _this3.createLetterTags(word, index + 1);
+        _this3.appendTags(word, letterTagsArr);
       });
     }
   }, {
@@ -165,6 +186,14 @@ var movinwords = function () {
     key: 'getLettersArray',
     value: function getLettersArray(word) {
       return [].concat(_toConsumableArray(word.innerText));
+    }
+  }, {
+    key: 'setCSSVariables',
+    value: function setCSSVariables(sentence) {
+      sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence));
+      sentence.style.setProperty('--mw-duration', this.options.duration + 'ms');
+      sentence.style.setProperty('--mw-delay', this.options.delay + 'ms');
+      sentence.style.setProperty('--mw-offset', this.options.offset);
     }
   }, {
     key: 'createWordTags',

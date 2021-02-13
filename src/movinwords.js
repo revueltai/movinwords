@@ -1,14 +1,18 @@
 class movinwords {
   constructor (opts = {}) {
+    this.sentences = null
+    this.started = false
+    this.visible = '--v'
     this.classNames = {
       base: 'mw',
-      word: 'mw-word',
-      letter: 'mw-letter'
+      word: 'mw-w',
+      letter: 'mw-l'
     }
-
     this.options = {
+      autostart: true,
       duration: 1000,
       delay: 0,
+      offset: 20,
       transition: 'fadeIn',
       wordSpacing: null,
       highlight: {
@@ -19,24 +23,37 @@ class movinwords {
       ...opts
     }
 
-    this.parseSentences()
+    this.getSentences()
+
+    if (this.options.autostart) {
+      this.start()
+    }
+  }
+
+  start () {
+    if (!this.started) {
+      this.started = true
+      this.parseSentences()
+    }
+  }
+
+  getSentences () {
+    this.sentences = document.querySelectorAll(this.options.el)
+    this.sentences.forEach(sentence => {
+      sentence.classList.add(this.classNames.base)
+      sentence.classList.add(this.options.transition)
+    })
   }
 
   parseSentences () {
-    const sentences = document.querySelectorAll(this.options.el)
-
-    sentences.forEach(sentence => {
-      sentence.classList.add(this.classNames.base)
-      sentence.classList.add(this.options.transition)
+    this.sentences.forEach(sentence => {
+      this.setCSSVariables(sentence)
 
       this.createAndAppendWordTags(sentence)
       this.createAndAppendLetterTags(sentence)
 
       setTimeout(() => {
-        sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence))
-        sentence.style.setProperty('--mw-duration', `${this.options.duration}ms`)
-        sentence.style.setProperty('--mw-delay', `${this.options.delay}ms`)
-        sentence.classList.add('--visible')
+        sentence.classList.add(this.visible)
         delete sentence.dataset[this.classNames.base]
       }, 500)
     })
@@ -105,6 +122,13 @@ class movinwords {
 
   getLettersArray (word) {
     return [...word.innerText]
+  }
+
+  setCSSVariables (sentence) {
+    sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence))
+    sentence.style.setProperty('--mw-duration', `${this.options.duration}ms`)
+    sentence.style.setProperty('--mw-delay', `${this.options.delay}ms`)
+    sentence.style.setProperty('--mw-offset', this.options.offset)
   }
 
   createWordTags (sentence) {
