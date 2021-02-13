@@ -140,4 +140,4 @@ new movinwords({
 | `words` | `array` | `[]` | Array containing the words that we want to highlight.
 
 ## Examples
-Check out the examples [here](https://github.com/revueltai/movinwords/tree/main/examples).
+Check out the examples [here](https://github.com/revueltai/movinwords/tree/main/docs).
