@@ -24,8 +24,40 @@
         color: #E8E8E8;
       }
 
-      .wrapper {
+      header {
+        position: relative;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
         padding: 32px;
+        min-height: 400px;
+      }
+
+      .logo {
+        width: 330px;
+        display: block;
+        margin: 0 auto
+      }
+
+      .badges {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+
+      .cta-github {
+        margin-top: 24px;
+        margin-bottom: 40px;
+      }
+
+      .examples a:not(:last-child) {
+        margin-right: 16px;
+      }
+
+      .wrapper {
+        padding: 0 32px 32px;
       }
 
       .highlight {
@@ -82,6 +114,7 @@
       }
 
       .cta {
+        cursor: pointer;
         color: grey;
         transition: color 200ms ease-in-out;
         text-decoration: none;
@@ -118,14 +151,11 @@
         font: normal 12px Consolas, Monaco, monospace;
       }
 
-      button {
-        position: absolute;
+      .button {
         cursor: pointer;
         border: 0;
-        left: 24px;
-        bottom: 24px;
-        padding: 10px;
-        border-radius: 8px;
+        padding: 15px 20px;
+        border-radius: 50px;
         background-color: #0095D0;
         color: #E8E8E8;
         text-decoration: none;
@@ -134,21 +164,47 @@
         display: block;
         appearance: none;
         user-select: none;
+        outline: none;
+        transition: background-color 500ms ease-in-out;
       }
 
-      button:hover {
+      .button:hover {
         background-color: #045879;
+      }
+
+      #example5-cta {
+        position: absolute;
+        left: 24px;
+        bottom: 24px;
       }
     </style>
   </head>
   <body>
+    <header>
+      <img class="logo" src="https://a.storyblok.com/f/99692/x/1e8aea55ab/movinwords-logo.svg" alt="Movinwords">
+
+      <a class="button cta-github" href="https://github.com/revueltai/movinwords" target="_blank">Get it on Github</a>
+
+      <div class="badges">
+        <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+        <img src="https://badge.fury.io/js/movinwords.svg">
+      </div>
+
+      <nav class="examples">
+        <span class="cta" data-id="example1">Example 1</span>
+        <span class="cta" data-id="example2">Example 2</span>
+        <span class="cta" data-id="example3">Example 3</span>
+        <span class="cta" data-id="example4">Example 4</span>
+      </nav>
+    </header>
+
     <div class="wrapper">
 
       <!-- Example 1 -->
       <div id="example1" class="block">
         <div class="heading">
           <h2 class="title">Example 1: The words fade in.</h2>
-          <a class="cta" href="#example1" data-id="example1"></a>
+          <span class="cta cta-code" data-id="example1"></span>
         </div>
 
         <div class="example">
@@ -170,7 +226,7 @@
       <div id="example2" class="block">
         <div class="heading">
           <h2 class="title">Example 2: The words fade in with delay and duration applied.</h2>
-          <a class="cta" href="#example2" data-id="example2"></a>
+          <span class="cta cta-code" data-id="example2"></span>
         </div>
 
         <div class="example">
@@ -194,7 +250,7 @@
       <div id="example3" class="block">
         <div class="heading">
           <h2 class="title">Example 3: The words "reveal in" and are also highlighted.</h2>
-          <a class="cta" href="#example3" data-id="example3"></a>
+          <span class="cta cta-code" data-id="example3"></span>
         </div>
 
         <div class="example">
@@ -224,7 +280,7 @@
       <div id="example4" class="block">
         <div class="heading">
           <h2 class="title">Example 4: The words have custom offset and word spacing.</h2>
-          <a class="cta" href="#example4" data-id="example4"></a>
+          <span class="cta cta-code" data-id="example4"></span>
         </div>
 
         <div class="example">
@@ -256,7 +312,7 @@
       <div id="example5" class="block">
         <div class="heading">
           <h2 class="title">Example 5: Autostart is false, and Movinwords is triggered when we click the button via the start() method.</h2>
-          <a class="cta" href="#example5" data-id="example5"></a>
+          <span class="cta cta-code" data-id="example5"></span>
         </div>
 
         <div class="example">
@@ -264,7 +320,7 @@
             Hello world! This is Movinwords! 👋
           </p>
 
-          <button id="example5-cta">Click Me!</button>
+          <button class="button" id="example5-cta">Click Me!</button>
 
           <pre class="code">
             <code>
@@ -288,18 +344,23 @@
           </pre>
         </div>
       </div>
-
-
     </div>
 
     <script type="text/javascript">
       // Page logic
       window.addEventListener('load', () => {
-        const codeCtas = document.querySelectorAll('.cta')
         const activeClass = 'active'
+        const examplesCtas = document.querySelectorAll('.examples .cta')
+        const codeCtas = document.querySelectorAll('.cta-code')
+
+        examplesCtas.forEach(cta => {
+          cta.addEventListener('click', () => {
+            document.getElementById(cta.dataset.id).scrollIntoView({behavior: 'smooth'})
+          })
+        })
 
         codeCtas.forEach(cta => {
-          cta.addEventListener('click', () => {
+          cta.addEventListener('click', (event) => {
             document.getElementById(cta.dataset.id).classList.toggle(activeClass)
           })
         })

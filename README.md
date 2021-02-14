@@ -1,4 +1,4 @@
-
+![movinwords](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
 
 # movinwords
 A plugin to animate sentences and words.
@@ -140,4 +140,4 @@ new movinwords({
 | `words` | `array` | `[]` | Array containing the words that we want to highlight.
 
 ## Examples
-Check out the examples [here](https://github.com/revueltai/movinwords/tree/main/docs).
+Check out some examples [here](https://github.com/revueltai/movinwords/tree/main/examples).
