@@ -1,3 +1,4 @@
+
 ![movinwords](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
 
 # movinwords
@@ -27,7 +28,7 @@ import movinwords from 'movinwords';
 
 const sentence = new movinwords({
   el: '.my-sentence'
-})
+});
 ```
 
 ##### Or without
@@ -53,12 +54,39 @@ const sentence = new movinwords({
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
-| `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which word should be highlighted and how ([See Highlight](#highlight)).
+| `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
+| `events`                | `object`  | ```{}```      | Object specifying callback functions for firing events ([See Events](#events)).
 
 ## Methods
 | Method | Description |
 |--|--|
 | `start` | Starts the animation ([See Autostart](#autostart)).|
+
+
+## Events
+You can register events callbacks to be fired at different points of Movinword's lifecycle.
+```js
+const mw = new movinwords({
+  el: '.my-sentence',
+  events: {
+    start: (options) => {
+      console.log('Started!', options)
+    },
+    end: (options) => {
+      console.log('Ended!', options)
+    }
+  }
+})
+```
+
+| Event Name | Description |
+|--|--|
+| `start` | Fires on Starts of Movinwords |
+| `end`* | Fires on End of Movinwords |
+| `wordTransitionStart`* | Fires when a word transition starts |
+| `wordTransitionEnd`* | Fires when a word transition ends |
+
+`* WIP, To be added soon`
 
 ## Autostart
 By default Movinwords will start as soon as you create the instance.
@@ -139,5 +167,5 @@ new movinwords({
 | `tag` | `string` | `strong` | HTML tag we want the word to be wrapped-highlighted in
 | `words` | `array` | `[]` | Array containing the words that we want to highlight.
 
-## Examples
-Check out some examples [here](https://github.com/revueltai/movinwords/tree/main/examples).
+## Sandbox
+Check out the sandbox [here](https://revueltai.github.io/movinwords/).

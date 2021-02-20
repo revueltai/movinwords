@@ -1,5 +1,5 @@
 /*
- * movinwords v1.0.1 - Add animation to your words and sentences tags.
+ * movinwords v1.0.2 - Add animation to your words and sentences tags.
  * Copyright (c) 2021 Ignacio Revuelta
  */
 'use strict';
@@ -24,15 +24,17 @@ var movinwords = function () {
 
     _classCallCheck(this, movinwords);
 
-    this.sentences = null;
-    this.started = false;
-    this.visible = '--v';
-    this.classNames = {
+    this._sentences = null;
+    this._started = false;
+    this._visible = '--v';
+    this._events = {};
+    this._eventNames = ['start', 'end', 'wordTransitionStart', 'wordTransitionEnd', 'letterTransitionStart', 'letterTransitionEnd'];
+    this._classNames = {
       base: 'mw',
       word: 'mw-w',
       letter: 'mw-l'
     };
-    this.options = _extends({
+    this._options = _extends({
       autostart: true,
       duration: 1000,
       delay: 0,
@@ -43,12 +45,14 @@ var movinwords = function () {
         classname: 'highlight',
         tag: 'strong',
         words: []
-      }
+      },
+      events: {}
     }, opts);
 
-    this.getSentences();
+    this._registerEvents();
+    this._getSentences();
 
-    if (this.options.autostart) {
+    if (this._options.autostart) {
       this.start();
     }
   }
@@ -56,91 +60,125 @@ var movinwords = function () {
   _createClass(movinwords, [{
     key: 'start',
     value: function start() {
-      if (!this.started) {
-        this.started = true;
-        this.parseSentences();
+      if (!this._started) {
+        this._started = true;
+        this._emitEvent('start', this._options);
+        this._parseSentences();
       }
     }
   }, {
-    key: 'getSentences',
-    value: function getSentences() {
-      var _this = this;
+    key: '_registerEvents',
+    value: function _registerEvents() {
+      var registeredEvents = this._options.events;
 
-      this.sentences = document.querySelectorAll(this.options.el);
-      this.sentences.forEach(function (sentence) {
-        sentence.classList.add(_this.classNames.base);
-        sentence.classList.add(_this.options.transition);
+      for (var eventName in registeredEvents) {
+        if (registeredEvents.hasOwnProperty(eventName) && this._isAllowedEvent(eventName)) {
+          this._addEventListener(eventName, registeredEvents[eventName]);
+        }
+      }
+    }
+  }, {
+    key: '_addEventListener',
+    value: function _addEventListener(event, callback) {
+      if (typeof event !== 'string' || typeof callback !== 'function') {
+        return false;
+      }
+
+      if (this._events[event] === undefined) {
+        this._events[event] = {
+          listeners: []
+        };
+      }
+
+      this._events[event].listeners.push(callback);
+    }
+  }, {
+    key: '_emitEvent',
+    value: function _emitEvent(event, details) {
+      if (this._events[event] === undefined) {
+        return false;
+      }
+
+      this._events[event].listeners.forEach(function (listener) {
+        listener(details);
       });
     }
   }, {
-    key: 'parseSentences',
-    value: function parseSentences() {
-      var _this2 = this;
-
-      this.sentences.forEach(function (sentence) {
-        _this2.setCSSVariables(sentence);
-
-        _this2.createAndAppendWordTags(sentence);
-        _this2.createAndAppendLetterTags(sentence);
-
-        setTimeout(function () {
-          sentence.classList.add(_this2.visible);
-          delete sentence.dataset[_this2.classNames.base];
-        }, 500);
-      });
+    key: '_isAllowedEvent',
+    value: function _isAllowedEvent(eventName) {
+      return this._eventNames.includes(eventName);
     }
   }, {
-    key: 'createAndAppendWordTags',
-    value: function createAndAppendWordTags(sentence) {
-      var wordTagsArr = this.createWordTags(sentence);
-      this.appendTags(sentence, wordTagsArr);
-    }
-  }, {
-    key: 'createAndAppendLetterTags',
-    value: function createAndAppendLetterTags(sentence) {
-      var _this3 = this;
-
-      var words = sentence.querySelectorAll('.' + this.classNames.word);
-
-      words.forEach(function (word, index) {
-        var letterTagsArr = _this3.createLetterTags(word, index + 1);
-        _this3.appendTags(word, letterTagsArr);
-      });
-    }
-  }, {
-    key: 'isArray',
-    value: function isArray(arr) {
-      return Array.isArray(arr);
-    }
-  }, {
-    key: 'isEmptyArray',
-    value: function isEmptyArray(arr) {
+    key: '_isEmptyArray',
+    value: function _isEmptyArray(arr) {
       if (Array.isArray(arr) && arr) {
         return !arr.length;
       }
     }
   }, {
-    key: 'isHighlightedWord',
-    value: function isHighlightedWord(word) {
-      var highlightedWordsArr = this.options.highlight.words;
-      return highlightedWordsArr && !this.isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word);
+    key: '_isHighlightedWord',
+    value: function _isHighlightedWord(word) {
+      var highlightedWordsArr = this._options.highlight.words;
+      return highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word);
     }
   }, {
-    key: 'createTag',
-    value: function createTag(options) {
-      var tag = document.createElement(options.tag);
-      tag.className = options.className;
-      tag.innerText = options.text;
-
-      for (var varName in options.vars) {
-        tag.style.setProperty('--mw-' + varName, options.vars[varName]);
+    key: '_setCSSVariables',
+    value: function _setCSSVariables(sentence) {
+      sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence));
+      sentence.style.setProperty('--mw-duration', this._options.duration + 'ms');
+      sentence.style.setProperty('--mw-delay', this._options.delay + 'ms');
+      sentence.style.setProperty('--mw-offset', this._options.offset);
+    }
+  }, {
+    key: '_getWordSpacing',
+    value: function _getWordSpacing(sentence) {
+      if (this._options.wordSpacing) {
+        return this._options.wordSpacing;
       }
 
-      return tag;
+      return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4;
     }
   }, {
-    key: 'appendTags',
-    value: function appendTags(el, tagsArr) {
+    key: '_getWordsArray',
+    value: function _getWordsArray(sentence) {
+      return sentence.innerText.trim().split(' ');
+    }
+  }, {
+    key: '_getLettersArray',
+    value: function _getLettersArray(word) {
+      return [].concat(_toConsumableArray(word.innerText));
+    }
+  }, {
+    key: '_getSentences',
+    value: function _getSentences() {
+      var _this = this;
+
+      this._sentences = document.querySelectorAll(this._options.el);
+      this._sentences.forEach(function (sentence) {
+        sentence.classList.add(_this._classNames.base);
+        sentence.classList.add(_this._options.transition);
+      });
+    }
+  }, {
+    key: '_parseSentences',
+    value: function _parseSentences() {
+      var _this2 = this;
+
+      this._sentences.forEach(function (sentence) {
+        _this2._setCSSVariables(sentence);
+        _this2._createAndAppendWordTags(sentence);
+        _this2._createAndAppendLetterTags(sentence);
+
+        setTimeout(function () {
+          sentence.classList.add(_this2._visible);
+          delete sentence.dataset[_this2._classNames.base];
+          _this2._emitEvent('end', _this2._options);
+        }, 100);
+      });
+    }
+  }, {
+    key: '_appendTags',
+    value: function _appendTags(el, tagsArr) {
       el.innerHTML = '';
 
       var _iteratorNormalCompletion = true;
@@ -169,37 +207,42 @@ var movinwords = function () {
       }
     }
   }, {
-    key: 'getWordSpacing',
-    value: function getWordSpacing(sentence) {
-      if (this.options.wordSpacing) {
-        return this.options.wordSpacing;
+    key: '_createTag',
+    value: function _createTag(options) {
+      var tagEl = document.createElement(options.tag);
+      tagEl.className = options.className;
+      tagEl.innerText = options.text;
+
+      for (var varName in options.vars) {
+        tagEl.style.setProperty('--mw-' + varName, options.vars[varName]);
       }
 
-      return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4;
+      return tagEl;
     }
   }, {
-    key: 'getWordsArray',
-    value: function getWordsArray(sentence) {
-      return sentence.innerText.trim().split(' ');
+    key: '_createAndAppendWordTags',
+    value: function _createAndAppendWordTags(sentence) {
+      var wordTagsArr = this._createWordTags(sentence);
+      this._appendTags(sentence, wordTagsArr);
     }
   }, {
-    key: 'getLettersArray',
-    value: function getLettersArray(word) {
-      return [].concat(_toConsumableArray(word.innerText));
+    key: '_createAndAppendLetterTags',
+    value: function _createAndAppendLetterTags(sentence) {
+      var _this3 = this;
+
+      var words = sentence.querySelectorAll('.' + this._classNames.word);
+
+      words.forEach(function (word, index) {
+        var letterTagsArr = _this3._createLetterTags(word, index + 1);
+        _this3._appendTags(word, letterTagsArr);
+      });
     }
   }, {
-    key: 'setCSSVariables',
-    value: function setCSSVariables(sentence) {
-      sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence));
-      sentence.style.setProperty('--mw-duration', this.options.duration + 'ms');
-      sentence.style.setProperty('--mw-delay', this.options.delay + 'ms');
-      sentence.style.setProperty('--mw-offset', this.options.offset);
-    }
-  }, {
-    key: 'createWordTags',
-    value: function createWordTags(sentence) {
+    key: '_createWordTags',
+    value: function _createWordTags(sentence) {
       var wordTagsArr = [];
-      var words = this.getWordsArray(sentence);
+      var words = this._getWordsArray(sentence);
+      var eventPayload = {};
 
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
@@ -210,14 +253,14 @@ var movinwords = function () {
           var word = _step2.value;
 
           var tag = 'span';
-          var className = this.classNames.word;
+          var className = this._classNames.word;
 
-          if (this.isHighlightedWord(word)) {
-            className += ' ' + this.options.highlight.classname;
-            tag = this.options.highlight.tag;
+          if (this._isHighlightedWord(word)) {
+            className += ' ' + this._options.highlight.classname;
+            tag = this._options.highlight.tag;
           }
 
-          wordTagsArr.push(this.createTag({
+          wordTagsArr.push(this._createTag({
             tag: tag,
             className: className,
             text: word
@@ -241,10 +284,10 @@ var movinwords = function () {
       return wordTagsArr;
     }
   }, {
-    key: 'createLetterTags',
-    value: function createLetterTags(word, wordIndex) {
+    key: '_createLetterTags',
+    value: function _createLetterTags(word, wordIndex) {
       var letterTagsArr = [];
-      var letters = this.getLettersArray(word);
+      var letters = this._getLettersArray(word);
 
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
@@ -256,9 +299,9 @@ var movinwords = function () {
               index = _step3$value[0],
               letter = _step3$value[1];
 
-          letterTagsArr.push(this.createTag({
+          letterTagsArr.push(this._createTag({
             tag: 'span',
-            className: '' + this.classNames.letter,
+            className: '' + this._classNames.letter,
             text: letter,
             vars: {
               w: wordIndex,

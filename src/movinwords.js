@@ -1,14 +1,23 @@
 class movinwords {
   constructor (opts = {}) {
-    this.sentences = null
-    this.started = false
-    this.visible = '--v'
-    this.classNames = {
+    this._sentences = null
+    this._started = false
+    this._visible = '--v'
+    this._events = {}
+    this._eventNames = [
+      'start',
+      'end',
+      'wordTransitionStart',
+      'wordTransitionEnd',
+      'letterTransitionStart',
+      'letterTransitionEnd'
+    ]
+    this._classNames = {
       base: 'mw',
       word: 'mw-w',
       letter: 'mw-l'
     }
-    this.options = {
+    this._options = {
       autostart: true,
       duration: 1000,
       delay: 0,
@@ -20,87 +29,121 @@ class movinwords {
        tag: 'strong',
        words: []
      },
+     events: {},
       ...opts
     }
 
-    this.getSentences()
+    this._registerEvents()
+    this._getSentences()
 
-    if (this.options.autostart) {
+    if (this._options.autostart) {
       this.start()
     }
   }
 
   start () {
-    if (!this.started) {
-      this.started = true
-      this.parseSentences()
+    if (!this._started) {
+      this._started = true
+      this._emitEvent('start', this._options)
+      this._parseSentences()
     }
   }
 
-  getSentences () {
-    this.sentences = document.querySelectorAll(this.options.el)
-    this.sentences.forEach(sentence => {
-      sentence.classList.add(this.classNames.base)
-      sentence.classList.add(this.options.transition)
+  _registerEvents () {
+    const registeredEvents = this._options.events
+
+    for (const eventName in registeredEvents) {
+      if (registeredEvents.hasOwnProperty(eventName) && this._isAllowedEvent(eventName)) {
+        this._addEventListener(eventName, registeredEvents[eventName])
+      }
+    }
+  }
+
+  _addEventListener (event, callback) {
+    if (typeof event !== 'string' || typeof callback !== 'function') {
+      return false
+    }
+
+    if (this._events[event] === undefined) {
+      this._events[event] = {
+        listeners: []
+      }
+    }
+
+    this._events[event].listeners.push(callback)
+  }
+
+  _emitEvent (event, details) {
+    if (this._events[event] === undefined) {
+      return false
+    }
+
+    this._events[event].listeners.forEach(listener => {
+      listener(details)
     })
   }
 
-  parseSentences () {
-    this.sentences.forEach(sentence => {
-      this.setCSSVariables(sentence)
-
-      this.createAndAppendWordTags(sentence)
-      this.createAndAppendLetterTags(sentence)
-
-      setTimeout(() => {
-        sentence.classList.add(this.visible)
-        delete sentence.dataset[this.classNames.base]
-      }, 500)
-    })
+  _isAllowedEvent (eventName) {
+    return this._eventNames.includes(eventName)
   }
 
-  createAndAppendWordTags (sentence) {
-    const wordTagsArr = this.createWordTags(sentence)
-    this.appendTags(sentence, wordTagsArr)
-  }
-
-  createAndAppendLetterTags (sentence) {
-    const words = sentence.querySelectorAll(`.${this.classNames.word}`)
-
-    words.forEach((word, index) => {
-      const letterTagsArr = this.createLetterTags(word, index + 1)
-      this.appendTags(word, letterTagsArr)
-    })
-  }
-
-  isArray (arr) {
-    return Array.isArray(arr)
-  }
-
-  isEmptyArray (arr) {
+  _isEmptyArray (arr) {
     if (Array.isArray(arr) && arr) {
       return !arr.length
     }
   }
 
-  isHighlightedWord (word) {
-    const highlightedWordsArr = this.options.highlight.words
-    return (highlightedWordsArr && !this.isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
+  _isHighlightedWord (word) {
+    const highlightedWordsArr = this._options.highlight.words
+    return (highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
   }
 
-  createTag (options) {
-    const tag = document.createElement(options.tag)
-    tag.className = options.className
-    tag.innerText = options.text
+  _setCSSVariables (sentence) {
+    sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence))
+    sentence.style.setProperty('--mw-duration', `${this._options.duration}ms`)
+    sentence.style.setProperty('--mw-delay', `${this._options.delay}ms`)
+    sentence.style.setProperty('--mw-offset', this._options.offset)
+  }
 
-    for (let varName in options.vars) {
-      tag.style.setProperty(`--mw-${varName}`, options.vars[varName])
+  _getWordSpacing (sentence) {
+    if (this._options.wordSpacing) {
+      return this._options.wordSpacing
     }
 
-    return tag
+    return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
   }
 
-  appendTags (el, tagsArr) {
+  _getWordsArray (sentence) {
+    return sentence.innerText.trim().split(' ')
+  }
+
+  _getLettersArray (word) {
+    return [...word.innerText]
+  }
+
+  _getSentences () {
+    this._sentences = document.querySelectorAll(this._options.el)
+    this._sentences.forEach(sentence => {
+      sentence.classList.add(this._classNames.base)
+      sentence.classList.add(this._options.transition)
+    })
+  }
+
+  _parseSentences () {
+    this._sentences.forEach(sentence => {
+      this._setCSSVariables(sentence)
+      this._createAndAppendWordTags(sentence)
+      this._createAndAppendLetterTags(sentence)
+
+      setTimeout(() => {
+        sentence.classList.add(this._visible)
+        delete sentence.dataset[this._classNames.base]
+        this._emitEvent('end', this._options)
+      }, 100)
+    })
+  }
+
+  _appendTags (el, tagsArr) {
     el.innerHTML = ''
 
     for (const tag of tagsArr) {
@@ -108,43 +151,47 @@ class movinwords {
     }
   }
 
-  getWordSpacing (sentence) {
-    if (this.options.wordSpacing) {
-      return this.options.wordSpacing
+  _createTag (options) {
+    const tagEl = document.createElement(options.tag)
+    tagEl.className = options.className
+    tagEl.innerText = options.text
+
+    for (const varName in options.vars) {
+      tagEl.style.setProperty(`--mw-${varName}`, options.vars[varName])
     }
 
-    return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
+    return tagEl
   }
 
-  getWordsArray (sentence) {
-    return sentence.innerText.trim().split(' ')
+  _createAndAppendWordTags (sentence) {
+    const wordTagsArr = this._createWordTags(sentence)
+    this._appendTags(sentence, wordTagsArr)
   }
 
-  getLettersArray (word) {
-    return [...word.innerText]
+  _createAndAppendLetterTags (sentence) {
+    const words = sentence.querySelectorAll(`.${this._classNames.word}`)
+
+    words.forEach((word, index) => {
+      const letterTagsArr = this._createLetterTags(word, index + 1)
+      this._appendTags(word, letterTagsArr)
+    })
   }
 
-  setCSSVariables (sentence) {
-    sentence.style.setProperty('--mw-word-spacing', this.getWordSpacing(sentence))
-    sentence.style.setProperty('--mw-duration', `${this.options.duration}ms`)
-    sentence.style.setProperty('--mw-delay', `${this.options.delay}ms`)
-    sentence.style.setProperty('--mw-offset', this.options.offset)
-  }
-
-  createWordTags (sentence) {
+  _createWordTags (sentence) {
     const wordTagsArr = []
-    const words = this.getWordsArray(sentence)
+    const words = this._getWordsArray(sentence)
+    let eventPayload = {}
 
     for (const word of words) {
       let tag = 'span'
-      let className = this.classNames.word
+      let className = this._classNames.word
 
-      if (this.isHighlightedWord(word)) {
-        className += ` ${this.options.highlight.classname}`
-        tag = this.options.highlight.tag
+      if (this._isHighlightedWord(word)) {
+        className += ` ${this._options.highlight.classname}`
+        tag = this._options.highlight.tag
       }
 
-      wordTagsArr.push(this.createTag({
+      wordTagsArr.push(this._createTag({
         tag,
         className,
         text: word
@@ -154,14 +201,14 @@ class movinwords {
     return wordTagsArr
   }
 
-  createLetterTags (word, wordIndex) {
+  _createLetterTags (word, wordIndex) {
     const letterTagsArr = []
-    const letters = this.getLettersArray(word)
+    const letters = this._getLettersArray(word)
 
     for (const [index, letter] of letters.entries()) {
-      letterTagsArr.push(this.createTag({
+      letterTagsArr.push(this._createTag({
         tag: 'span',
-        className: `${this.classNames.letter}`,
+        className: `${this._classNames.letter}`,
         text: letter,
         vars: {
           w: wordIndex,
