@@ -228,7 +228,7 @@ const _initExample = () => {
 const _appendCode = () => {
   const payload = JSON.stringify(opts, (key, value) => {
     if (typeof value === 'function') {
-      return value.toString().replaceAll('\n', '')
+      return value.toString().replace(/\n+/g, '')
     }
 
     return value
