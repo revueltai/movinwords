@@ -18,6 +18,20 @@ const exampleOptions = {
     classname: 'highlight',
     tag: 'strong',
     words: ['world!', 'Movinwords!']
+  },
+  events: {
+    start: (options) => {
+      console.log('Movinwords has Started!', options)
+    },
+    end: (options) => {
+      console.log('Movinwords has Ended!', options)
+    },
+    wordTransitionStart: (options) => {
+      console.log('Word Transition started!', options)
+    },
+    wordTransitionEnd: (options) => {
+      console.log('Word Transition ended!', options)
+    }
   }
 }
 
@@ -121,6 +135,13 @@ const _createOptionsUI = (options) => {
     label: 'Highlight words?',
     dataType: 'highlight'
   })
+  const eventsCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-events',
+    className: 'ui-checkbox-events',
+    label: 'Trigger Events?',
+    dataType: 'events',
+    checked: true
+  })
 
   const durationContainer = _createContainer({
     el: durationSelect,
@@ -155,6 +176,9 @@ const _createOptionsUI = (options) => {
   const highlightContainer = _createContainer({
     el: highlightCheckbox
   })
+  const eventsContainer = _createContainer({
+    el: eventsCheckbox
+  })
 
   container.appendChild(durationContainer)
   container.appendChild(delayContainer)
@@ -162,6 +186,7 @@ const _createOptionsUI = (options) => {
   container.appendChild(offsetContainer)
   container.appendChild(wordSpacingContainer)
   container.appendChild(highlightContainer)
+  container.appendChild(eventsContainer)
 }
 
 const _prepareSentence = () => {
@@ -187,6 +212,8 @@ const _prepareOptionsEvents = () => {
     event.preventDefault()
     _initExample()
   })
+
+  _initExample()
 }
 
 const _initExample = () => {
@@ -216,7 +243,7 @@ mw.start();
 
 const _updateOptionsPayload = () => {
   const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing']
-  const checkboxProps = ['highlight']
+  const checkboxProps = ['highlight', 'events']
   const optionsIds = [
     'ui-select-delay',
     'ui-select-duration',
@@ -224,7 +251,8 @@ const _updateOptionsPayload = () => {
     'ui-select-offset',
     'ui-select-word-spacing',
     'ui-select-transitions',
-    'ui-checkbox-highlight'
+    'ui-checkbox-highlight',
+    'ui-checkbox-events'
   ]
 
   let payload = {

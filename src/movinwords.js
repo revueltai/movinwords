@@ -1,6 +1,7 @@
 class movinwords {
   constructor (opts = {}) {
     this._sentences = null
+    this._words = []
     this._started = false
     this._visible = '--v'
     this._events = {}
@@ -30,6 +31,7 @@ class movinwords {
        words: []
      },
      events: {},
+     eventsTransitionProperty: 'opacity',
       ...opts
     }
 
@@ -38,14 +40,6 @@ class movinwords {
 
     if (this._options.autostart) {
       this.start()
-    }
-  }
-
-  start () {
-    if (!this._started) {
-      this._started = true
-      this._emitEvent('start', this._options)
-      this._parseSentences()
     }
   }
 
@@ -98,6 +92,22 @@ class movinwords {
     return (highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
   }
 
+  _isLastLetterOfWord (index, total) {
+    return index === total - 1
+  }
+
+  _isLastWordOfSentence (wordStr) {
+    let output = false
+
+    for (let [index, word] of this._words.entries()) {
+      if ((wordStr === word) && (index + 1 === this._words.length)) {
+        output = true
+      }
+    }
+
+    return output
+  }
+
   _setCSSVariables (sentence) {
     sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence))
     sentence.style.setProperty('--mw-duration', `${this._options.duration}ms`)
@@ -114,7 +124,8 @@ class movinwords {
   }
 
   _getWordsArray (sentence) {
-    return sentence.innerText.trim().split(' ')
+    this._words = sentence.innerText.trim().split(' ')
+    return this._words
   }
 
   _getLettersArray (word) {
@@ -138,7 +149,6 @@ class movinwords {
       setTimeout(() => {
         sentence.classList.add(this._visible)
         delete sentence.dataset[this._classNames.base]
-        this._emitEvent('end', this._options)
       }, 100)
     })
   }
@@ -206,7 +216,7 @@ class movinwords {
     const letters = this._getLettersArray(word)
 
     for (const [index, letter] of letters.entries()) {
-      letterTagsArr.push(this._createTag({
+      const tagEl = this._createTag({
         tag: 'span',
         className: `${this._classNames.letter}`,
         text: letter,
@@ -214,10 +224,46 @@ class movinwords {
           w: wordIndex,
           l: index
         }
-      }))
+      })
+
+      if (this._isLastLetterOfWord(index, letters.length)) {
+        const payload = {
+          ...this._options,
+          word: {
+            el: word,
+            text: word.innerText
+          }
+        }
+
+        tagEl.addEventListener('transitionstart', (event) => {
+          if (event.propertyName === this._options.eventsTransitionProperty) {
+            this._emitEvent(`wordTransitionStart`, payload)
+          }
+        })
+
+        tagEl.addEventListener('transitionend', (event) => {
+          if (event.propertyName === this._options.eventsTransitionProperty) {
+            this._emitEvent(`wordTransitionEnd`, payload)
+
+            if (this._isLastWordOfSentence(word.innerText)) {
+              this._emitEvent('end', this._options)
+            }
+          }
+        })
+      }
+
+      letterTagsArr.push(tagEl)
     }
 
     return letterTagsArr
+  }
+
+  start () {
+    if (!this._started) {
+      this._started = true
+      this._emitEvent('start', this._options)
+      this._parseSentences()
+    }
   }
 }
 

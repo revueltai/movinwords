@@ -13,6 +13,7 @@
   --mw-offset-sanitized-negative: calc(-1 * var(--mw-offset-sanitized));
   white-space: nowrap;
   display: inline-flex;
+  user-select: none
 }
 
 .mw .mw-w:not(:last-child) {

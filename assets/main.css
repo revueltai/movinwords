@@ -55,10 +55,52 @@ pre {
   color: #0095D0;
   background-color: #0b0d1afa;
   line-height: .5;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 pre code {
   font: normal 12px Consolas, Monaco, monospace;
+}
+
+pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+pre::-webkit-scrollbar-button:start:decrement,
+pre::-webkit-scrollbar-button:end:increment {
+  background-color: transparent;
+  display: none;
+}
+
+pre::-webkit-scrollbar-track-piece {
+  background-color: rgba(0, 0, 0, .3);
+}
+
+pre::-webkit-scrollbar-track-piece:vertical:start {
+  border-radius: 4px 4px 0 0;
+}
+
+pre::-webkit-scrollbar-track-piece:vertical:end {
+  border-radius: 0 0 4px 4px;
+}
+
+pre::-webkit-scrollbar-track-piece:horizontal:start {
+  border-radius: 4px 0 0 4px;
+}
+
+pre::-webkit-scrollbar-track-piece:horizontal:end {
+  border-radius: 0 4px 4px 0;
+}
+
+pre::-webkit-scrollbar-thumb:vertical,
+pre::-webkit-scrollbar-thumb:horizontal {
+  background-color: #1a1f40fa;
+  border-radius: 4px;
+  display: block;
+  height: 48px;
+  transition: background-color 500ms ease-in-out;
 }
 
 .highlight {

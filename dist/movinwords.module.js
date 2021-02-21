@@ -1,5 +1,5 @@
 /*
- * movinwords v1.0.2 - Add animation to your words and sentences tags.
+ * movinwords v1.0.3 - Add animation to your words and sentences tags.
  * Copyright (c) 2021 Ignacio Revuelta
  */
 'use strict';
@@ -25,6 +25,7 @@ var movinwords = function () {
     _classCallCheck(this, movinwords);
 
     this._sentences = null;
+    this._words = [];
     this._started = false;
     this._visible = '--v';
     this._events = {};
@@ -46,7 +47,8 @@ var movinwords = function () {
         tag: 'strong',
         words: []
       },
-      events: {}
+      events: {},
+      eventsTransitionProperty: 'opacity'
     }, opts);
 
     this._registerEvents();
@@ -58,15 +60,6 @@ var movinwords = function () {
   }
 
   _createClass(movinwords, [{
-    key: 'start',
-    value: function start() {
-      if (!this._started) {
-        this._started = true;
-        this._emitEvent('start', this._options);
-        this._parseSentences();
-      }
-    }
-  }, {
     key: '_registerEvents',
     value: function _registerEvents() {
       var registeredEvents = this._options.events;
@@ -122,6 +115,47 @@ var movinwords = function () {
       return highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word);
     }
   }, {
+    key: '_isLastLetterOfWord',
+    value: function _isLastLetterOfWord(index, total) {
+      return index === total - 1;
+    }
+  }, {
+    key: '_isLastWordOfSentence',
+    value: function _isLastWordOfSentence(wordStr) {
+      var output = false;
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this._words.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var _step$value = _slicedToArray(_step.value, 2),
+              index = _step$value[0],
+              word = _step$value[1];
+
+          if (wordStr === word && index + 1 === this._words.length) {
+            output = true;
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return output;
+    }
+  }, {
     key: '_setCSSVariables',
     value: function _setCSSVariables(sentence) {
       sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence));
@@ -141,7 +175,8 @@ var movinwords = function () {
   }, {
     key: '_getWordsArray',
     value: function _getWordsArray(sentence) {
-      return sentence.innerText.trim().split(' ');
+      this._words = sentence.innerText.trim().split(' ');
+      return this._words;
     }
   }, {
     key: '_getLettersArray',
@@ -172,7 +207,6 @@ var movinwords = function () {
         setTimeout(function () {
           sentence.classList.add(_this2._visible);
           delete sentence.dataset[_this2._classNames.base];
-          _this2._emitEvent('end', _this2._options);
         }, 100);
       });
     }
@@ -181,27 +215,27 @@ var movinwords = function () {
     value: function _appendTags(el, tagsArr) {
       el.innerHTML = '';
 
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = tagsArr[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var tag = _step.value;
+        for (var _iterator2 = tagsArr[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var tag = _step2.value;
 
           el.appendChild(tag);
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -244,13 +278,13 @@ var movinwords = function () {
       var words = this._getWordsArray(sentence);
       var eventPayload = {};
 
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator2 = words[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var word = _step2.value;
+        for (var _iterator3 = words[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var word = _step3.value;
 
           var tag = 'span';
           var className = this._classNames.word;
@@ -264,49 +298,6 @@ var movinwords = function () {
             tag: tag,
             className: className,
             text: word
-          }));
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      return wordTagsArr;
-    }
-  }, {
-    key: '_createLetterTags',
-    value: function _createLetterTags(word, wordIndex) {
-      var letterTagsArr = [];
-      var letters = this._getLettersArray(word);
-
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = letters.entries()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var _step3$value = _slicedToArray(_step3.value, 2),
-              index = _step3$value[0],
-              letter = _step3$value[1];
-
-          letterTagsArr.push(this._createTag({
-            tag: 'span',
-            className: '' + this._classNames.letter,
-            text: letter,
-            vars: {
-              w: wordIndex,
-              l: index
-            }
           }));
         }
       } catch (err) {
@@ -324,7 +315,90 @@ var movinwords = function () {
         }
       }
 
+      return wordTagsArr;
+    }
+  }, {
+    key: '_createLetterTags',
+    value: function _createLetterTags(word, wordIndex) {
+      var _this4 = this;
+
+      var letterTagsArr = [];
+      var letters = this._getLettersArray(word);
+
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = letters.entries()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var _step4$value = _slicedToArray(_step4.value, 2),
+              index = _step4$value[0],
+              letter = _step4$value[1];
+
+          var tagEl = this._createTag({
+            tag: 'span',
+            className: '' + this._classNames.letter,
+            text: letter,
+            vars: {
+              w: wordIndex,
+              l: index
+            }
+          });
+
+          if (this._isLastLetterOfWord(index, letters.length)) {
+            (function () {
+              var payload = _extends({}, _this4._options, {
+                word: {
+                  el: word,
+                  text: word.innerText
+                }
+              });
+
+              tagEl.addEventListener('transitionstart', function (event) {
+                if (event.propertyName === _this4._options.eventsTransitionProperty) {
+                  _this4._emitEvent('wordTransitionStart', payload);
+                }
+              });
+
+              tagEl.addEventListener('transitionend', function (event) {
+                if (event.propertyName === _this4._options.eventsTransitionProperty) {
+                  _this4._emitEvent('wordTransitionEnd', payload);
+
+                  if (_this4._isLastWordOfSentence(word.innerText)) {
+                    _this4._emitEvent('end', _this4._options);
+                  }
+                }
+              });
+            })();
+          }
+
+          letterTagsArr.push(tagEl);
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
       return letterTagsArr;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      if (!this._started) {
+        this._started = true;
+        this._emitEvent('start', this._options);
+        this._parseSentences();
+      }
     }
   }]);
 

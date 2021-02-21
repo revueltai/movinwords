@@ -1,10 +1,9 @@
-
 ![movinwords](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
 
 # movinwords
 A plugin to animate sentences and words.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://badge.fury.io/js/movinwords.svg)](https://badge.fury.io/js/movinwords)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
 ## Installation
 
@@ -55,7 +54,8 @@ const sentence = new movinwords({
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
 | `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
-| `events`                | `object`  | ```{}```      | Object specifying callback functions for firing events ([See Events](#events)).
+| `events`                | `object`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
+| `eventsTransitionProperty`                | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
 
 ## Methods
 | Method | Description |
@@ -72,6 +72,12 @@ const mw = new movinwords({
     start: (options) => {
       console.log('Started!', options)
     },
+    wordTransitionStart: (options) => {
+      console.log('Word Transition Started', options)
+    },
+    wordTransitionEnd: (options) => {
+      console.log('Word Transition Ended', options)
+    },
     end: (options) => {
       console.log('Ended!', options)
     }
@@ -82,11 +88,28 @@ const mw = new movinwords({
 | Event Name | Description |
 |--|--|
 | `start` | Fires on Starts of Movinwords |
-| `end`* | Fires on End of Movinwords |
-| `wordTransitionStart`* | Fires when a word transition starts |
-| `wordTransitionEnd`* | Fires when a word transition ends |
+| `end` | Fires on End of Movinwords |
+| `wordTransitionStart` | Fires when a word transition starts |
+| `wordTransitionEnd` | Fires when a word transition ends |
 
-`* WIP, To be added soon`
+#### Events and Transitions:
+`wordTransitionStart` and `wordTransitionEnd` use Javascript's `transitionstart` and `transitionend` events under the hood to know when they need to fire. These last two fire for each CSS transition property declared (e.g: If a CSS transition uses opacity and transform, the events will fire twice).
+
+To avoid this issue we have exposed the `eventsTransitionProperty` property.
+It expects the CSS transition name you want to use as 'filter' to focus on and exclude all other props:
+```css
+.mw.slideInBottom .mw-l {
+  opacity: 0;
+  transition-property: opacity, transform;
+```
+```js
+const mw = new movinwords({
+  el: '.my-sentence',
+  transition: 'slideInBottom',
+  events: { [YOUR EVENT CALLBACKS ] },
+  eventsTransitionProperty: 'opacity' // Movinwords will focus on the opacity prop and ignore the transform one.
+})
+```
 
 ## Autostart
 By default Movinwords will start as soon as you create the instance.
