@@ -1,4 +1,4 @@
-class movinwords {
+class Movinwords {
   constructor (opts = {}) {
     this._sentences = null
     this._words = []
@@ -267,4 +267,4 @@ class movinwords {
   }
 }
 
-export default movinwords
+export default Movinwords
