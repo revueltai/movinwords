@@ -1,4 +1,4 @@
-class movinwords {
+class Movinwords {
   constructor (opts = {}) {
     this._sentences = null
     this._words = []
@@ -13,15 +13,17 @@ class movinwords {
       'letterTransitionStart',
       'letterTransitionEnd'
     ]
+
     this._classNames = {
       base: 'mw',
       word: 'mw-w',
       letter: 'mw-l'
     }
+
     this._options = {
       autostart: true,
       duration: 1000,
-      delay: 0,
+      delay: 100,
       offset: 20,
       transition: 'fadeIn',
       wordSpacing: null,
@@ -267,4 +269,4 @@ class movinwords {
   }
 }
 
-export default movinwords
+export default Movinwords

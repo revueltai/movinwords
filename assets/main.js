@@ -221,7 +221,7 @@ const _initExample = () => {
   _prepareSentence()
   _appendCode()
 
-  const mw = new movinwords(opts)
+  const mw = new Movinwords(opts)
   mw.start()
 }
 
@@ -235,7 +235,7 @@ const _appendCode = () => {
   }, 4)
 
   document.getElementById('code').innerText = `
-const mw = new movinwords(${payload});
+const mw = new Movinwords(${payload});
 
 mw.start();
 `
