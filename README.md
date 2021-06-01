@@ -22,21 +22,21 @@ npm install movinwords
 
 ##### With a bundler
 ```js
-import 'movinwords/dist/movinwords.min.css';
+import 'movinwords/dist/movinwords.css';
 import movinwords from 'movinwords';
 
-const sentence = new movinwords({
+const sentence = new Movinwords({
   el: '.my-sentence'
 });
 ```
 
 ##### Or without
 ```js
-<link rel="stylesheet" href="movinwords.min.css">
+<link rel="stylesheet" href="movinwords.css">
 <script src="movinwords.min.js"></script>
 <script>
   (function () {
-    const sentence = new movinwords({
+    const sentence = new Movinwords({
       el: '.my-sentence'
     });
   })();
@@ -48,7 +48,7 @@ const sentence = new movinwords({
 | ----------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `el`                    | `string`  | `null`             | **Required:** Sentence container element.
 | `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
-| `delay`                 | `number`  | `0`                | Delay of the animation in milliseconds.
+| `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
 | `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Transitions](#transitions)).
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
@@ -66,7 +66,7 @@ const sentence = new movinwords({
 ## Events
 You can register events callbacks to be fired at different points of Movinword's lifecycle.
 ```js
-const mw = new movinwords({
+const mw = new Movinwords({
   el: '.my-sentence',
   events: {
     start: (options) => {
@@ -103,7 +103,7 @@ It expects the CSS transition name you want to use as 'filter' to focus on and e
   transition-property: opacity, transform;
 ```
 ```js
-const mw = new movinwords({
+const mw = new Movinwords({
   el: '.my-sentence',
   transition: 'slideInBottom',
   events: { [YOUR EVENT CALLBACKS ] },
@@ -115,7 +115,7 @@ const mw = new movinwords({
 By default Movinwords will start as soon as you create the instance.
 But you can override this action and trigger the start action manually by passing `autostart: false` in the instance options, and using the `start()` method:
 ```js
-const mw = new movinwords({
+const mw = new Movinwords({
   el: '.my-sentence',
   autostart: false
 })
@@ -140,7 +140,7 @@ Movinwords ships with these css transitions to use:
 | `revealInBottom`   | Words slide+fade in from bottom to top inside a hidden container |
 
 ```js
-new movinwords({
+new Movinwords({
   el: '.my-sentence',
   transition: 'slideInLeft' // Words will slide from the left
 })
@@ -151,7 +151,7 @@ You can define an offset value to be used with `slide` and `reveal` animations.
 This will tell Movinwords how offsetted the words should be from the baseline anchor point (0px).
 
 ```js
-new movinwords({
+new Movinwords({
   el: '.my-sentence',
   transition: 'slideInLeft',
   offset: 50 // Words will be 50px offset from the start (0px) and slide in from left to right
@@ -161,7 +161,7 @@ new movinwords({
 ## Word Spacing
 By default Movinwords will calculate the space between words based on the sentence's font size, but you can pass a value of your own to override this action:
 ```js
-new movinwords({
+new Movinwords({
   el: '.my-sentence',
   wordSpacing: 50 // Will force a 50px space between each word.
 })
@@ -174,7 +174,7 @@ To highlight words you need to pass a `highlight` object in the instance options
 <h1 class="my-sentence">Hello world! I am an animated sentence.</h1>
 ```
 ```js
-new movinwords({
+new Movinwords({
   el: '.my-sentence',
   highlight: {
     classname: 'highlight',

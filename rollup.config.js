@@ -1,13 +1,13 @@
-import postcss from 'rollup-plugin-postcss'
+import { terser } from "rollup-plugin-terser"
 
 const distPath = 'dist/'
 
 const config = [
   {
-    input: 'src/Movinwords.js',
+    input: 'src/movinwords.js',
     output: [
       {
-        file: `${distPath}movinwords.cjs.js`,
+        file: `${distPath}movinwords.js`,
         format: 'cjs'
       },
       {
@@ -16,10 +16,20 @@ const config = [
       },
       {
         name: 'Movinwords',
+        file: `${distPath}movinwords.umd.js`,
+        format: 'umd'
+      },
+      {
+        name: 'Movinwords',
         file: `${distPath}movinwords.min.js`,
         format: 'iife'
       }
-    ]
+    ],
+     plugins: [
+       terser({
+         keep_classnames: true
+       })
+     ]
   }
 ]
 

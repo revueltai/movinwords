@@ -13,15 +13,17 @@ class Movinwords {
       'letterTransitionStart',
       'letterTransitionEnd'
     ]
+
     this._classNames = {
       base: 'mw',
       word: 'mw-w',
       letter: 'mw-l'
     }
+
     this._options = {
       autostart: true,
       duration: 1000,
-      delay: 0,
+      delay: 100,
       offset: 20,
       transition: 'fadeIn',
       wordSpacing: null,
