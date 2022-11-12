@@ -51,11 +51,13 @@ const sentence = new Movinwords({
 | `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
 | `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Transitions](#transitions)).
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
+| `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
 | `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
 | `events`                | `object`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
 | `eventsTransitionProperty`                | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
+| `intersectionOptions`   | `object`  | ```{ root: null, threshold: 0, rootMargin: '0px' }```      | Object specifying the intersection properties ([See Viewport Intersection](#viewport-intersection)).
 
 ## Methods
 | Method | Description |
@@ -189,6 +191,31 @@ new Movinwords({
 | `classname` | `string` | `highlight` | Classname to append to the highlighted word tags
 | `tag` | `string` | `strong` | HTML tag we want the word to be wrapped-highlighted in
 | `words` | `array` | `[]` | Array containing the words that we want to highlight.
+
+## Viewport Intersection
+You can define if you want to trigger Movinwords **only when the element is in the Viewport**.
+
+```js
+new Movinwords({
+  el: '.my-sentence',
+  intersectionStart: true // Movinwords will start when the element enters the viewport.
+})
+```
+
+Movinwords uses [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) behind the scenes.
+If you wish to modify the intersection properties you can provide `intersectionOptions` in the options:
+
+```js
+new Movinwords({
+  el: '.my-sentence',
+  intersectionStart: true,
+  intersectionOptions: {
+    root: null,
+    threshold: 0,
+    rootMargin: '0px'
+  }
+})
+```
 
 ## Sandbox
 Check out the sandbox [here](https://revueltai.github.io/movinwords/).

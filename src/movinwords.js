@@ -28,20 +28,30 @@ class Movinwords {
       transition: 'fadeIn',
       wordSpacing: null,
       highlight: {
-       classname: 'highlight',
-       tag: 'strong',
-       words: []
-     },
-     events: {},
-     eventsTransitionProperty: 'opacity',
+        classname: 'highlight',
+        tag: 'strong',
+        words: []
+      },
+      events: {},
+      eventsTransitionProperty: 'opacity',
+      intersectionStart: false,
+      intersectionOptions: {
+        root: null,
+        threshold: 0,
+        rootMargin: '0px'
+      },
       ...opts
     }
 
-    this._registerEvents()
-    this._getSentences()
+    this._sentences = document.querySelectorAll(this._options.el)
 
-    if (this._options.autostart) {
-      this.start()
+    if (this._sentences) {
+      this._registerEvents()
+      this._getSentences()
+
+      if (this._options.autostart) {
+        this.start()
+      }
     }
   }
 
@@ -135,7 +145,6 @@ class Movinwords {
   }
 
   _getSentences () {
-    this._sentences = document.querySelectorAll(this._options.el)
     this._sentences.forEach(sentence => {
       sentence.classList.add(this._classNames.base)
       sentence.classList.add(this._options.transition)
@@ -260,11 +269,42 @@ class Movinwords {
     return letterTagsArr
   }
 
+  _triggerStart () {
+    this._started = true
+    this._emitEvent('start', this._options)
+    this._parseSentences()
+  }
+
+  _triggerStartOnIntersection () {
+    if (
+      'IntersectionObserver' in window &&
+      'IntersectionObserverEntry' in window &&
+      'intersectionRatio' in window.IntersectionObserverEntry.prototype &&
+      this._options.el
+    ) {
+      const observer = new IntersectionObserver((elements) => {
+        elements.forEach((el) => {
+          if (el.isIntersecting) {
+            this._triggerStart()
+          }
+        })
+      }, this._options.intersectionOptions)
+
+      this._sentences.forEach((el) => {
+        if (el) {
+          observer.observe(el)
+        }
+      })
+    }
+  }
+
   start () {
     if (!this._started) {
-      this._started = true
-      this._emitEvent('start', this._options)
-      this._parseSentences()
+      if (this._options.intersectionStart) {
+        this._triggerStartOnIntersection()
+      } else {
+        this._triggerStart()
+      }
     }
   }
 }

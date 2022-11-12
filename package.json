@@ -1,7 +1,9 @@
 {
   "name": "movinwords",
-  "version": "1.0.6",
-  "description": "Add animation to your words and sentences tags.",
+  "version": "1.0.7",
+  "author": "Ignacio 'Nacho' Revuelta - iamnacho.com",
+  "description": "Add animation to your words and sentences.",
+  "license": "MIT",
   "keywords": [
     "animation",
     "words",
@@ -20,8 +22,6 @@
   "module": "dist/movinwords.esm.js",
   "browser": "dist/movinwords.min.js",
   "unpkg": "dist/movinwords.umd.js",
-  "author": "Ignacio Revuelta",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revueltai/movinwords.git"

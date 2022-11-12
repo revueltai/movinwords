@@ -3,6 +3,7 @@ const activeClass = 'active'
 const exampleOptions = {
   el: '.word',
   autostart: false,
+  intersectionStart: false,
   timers: [500, 800, 1000, 2000],
   spacings: [10, 20, 50, 100],
   transitions: [
@@ -32,12 +33,17 @@ const exampleOptions = {
     wordTransitionEnd: (options) => {
       console.log('Word Transition ended!', options)
     }
+  },
+  intersectionOptions: {
+    root: null,
+    threshold: 0,
+    rootMargin: '0px'
   }
 }
 
 const _createLabel = (options) => {
   const labelEl = document.createElement('label')
-  labelEl.htmlFor = options.for || options.id || ''
+  labelEl.htmlFor = options.for || options.id || ''
   labelEl.className = options.className || ''
   labelEl.innerText = options.label
 
@@ -142,6 +148,13 @@ const _createOptionsUI = (options) => {
     dataType: 'events',
     checked: true
   })
+  const intersectionObserverCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-intersection',
+    className: 'ui-checkbox-intersection',
+    label: 'Trigger On Intersection?',
+    dataType: 'intersectionOptions',
+    checked: true
+  })
 
   const durationContainer = _createContainer({
     el: durationSelect,
@@ -179,6 +192,9 @@ const _createOptionsUI = (options) => {
   const eventsContainer = _createContainer({
     el: eventsCheckbox
   })
+  const intersectionObserverContainer = _createContainer({
+    el: intersectionObserverCheckbox
+  })
 
   container.appendChild(durationContainer)
   container.appendChild(delayContainer)
@@ -187,6 +203,7 @@ const _createOptionsUI = (options) => {
   container.appendChild(wordSpacingContainer)
   container.appendChild(highlightContainer)
   container.appendChild(eventsContainer)
+  container.appendChild(intersectionObserverContainer)
 }
 
 const _prepareSentence = () => {
@@ -212,17 +229,6 @@ const _prepareOptionsEvents = () => {
     event.preventDefault()
     _initExample()
   })
-
-  _initExample()
-}
-
-const _initExample = () => {
-  _updateOptionsPayload()
-  _prepareSentence()
-  _appendCode()
-
-  const mw = new Movinwords(opts)
-  mw.start()
 }
 
 const _appendCode = () => {
@@ -243,7 +249,7 @@ mw.start();
 
 const _updateOptionsPayload = () => {
   const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing']
-  const checkboxProps = ['highlight', 'events']
+  const checkboxProps = ['highlight', 'events', 'intersectionOptions']
   const optionsIds = [
     'ui-select-delay',
     'ui-select-duration',
@@ -252,12 +258,14 @@ const _updateOptionsPayload = () => {
     'ui-select-word-spacing',
     'ui-select-transitions',
     'ui-checkbox-highlight',
-    'ui-checkbox-events'
+    'ui-checkbox-events',
+    'ui-checkbox-intersection',
   ]
 
   let payload = {
     el: exampleOptions.el,
-    autostart: exampleOptions.autostart
+    autostart: exampleOptions.autostart,
+    intersectionStart: exampleOptions.intersectionStart
   }
 
   for (const id of optionsIds) {
@@ -271,6 +279,10 @@ const _updateOptionsPayload = () => {
     if (checkboxProps.includes(prop)) {
       if (el.checked) {
         payload[prop] = exampleOptions[prop]
+
+        if (prop === 'intersectionOptions') {
+          payload.intersectionStart = true
+        }
       }
     }
 
@@ -278,7 +290,17 @@ const _updateOptionsPayload = () => {
   }
 }
 
-window.addEventListener('load', () => {
+const _initExample = () => {
+  _updateOptionsPayload()
+  _prepareSentence()
+  _appendCode()
+
+  const mw = new Movinwords(opts)
+  mw.start()
+}
+
+window.addEventListener('DOMContentLoaded', () => {
   _createOptionsUI(exampleOptions)
   _prepareOptionsEvents()
+  _initExample()
 })
