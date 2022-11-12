@@ -4,7 +4,7 @@ const distPath = 'dist/'
 
 const config = [
   {
-    input: 'src/movinwords.js',
+    input: 'package/movinwords.js',
     output: [
       {
         file: `${distPath}movinwords.js`,

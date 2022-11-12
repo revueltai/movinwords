@@ -1,6 +1,6 @@
 {
   "name": "movinwords",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "Ignacio 'Nacho' Revuelta - iamnacho.com",
   "description": "Add animation to your words and sentences.",
   "license": "MIT",
@@ -12,16 +12,16 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "compile-css": "node-sass src/styles/ -o dist/ --output-style compressed",
+    "compile-css": "node-sass package/styles/ -o dist/ --output-style compressed",
     "prebuild": "npm run clean && npm run compile-css",
-    "build": "rollup -c",
-    "release": "npm run -s build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "build": "rollup -c && node package/preparePackage.js",
+    "release": "npm run -s build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && cd dist && npm publish"
   },
-  "source": "src/movinwords.js",
-  "main": "dist/movinwords.js",
-  "module": "dist/movinwords.esm.js",
-  "browser": "dist/movinwords.min.js",
-  "unpkg": "dist/movinwords.umd.js",
+  "source": "package/movinwords.js",
+  "main": "movinwords.js",
+  "module": "movinwords.esm.js",
+  "browser": "movinwords.min.js",
+  "unpkg": "movinwords.umd.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revueltai/movinwords.git"

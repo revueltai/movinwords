@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta property="og:site_name" content="Movinwords" />
+  <meta property="og:url" content="https://github.com/revueltai/movinwords">
+  <meta property="og:title" content="Movinwords">
+  <meta property="og:description" content="Movinwords is plugin to animate sentences and words in Javascript.">
+  <meta property="og:image" content="https://a.storyblok.com/f/99692/600x315/e650aa1a75/movinwords.jpg">
+  <title>Movinwords</title>
+  <link rel="stylesheet" href="assets/main.css">
+  <link rel="stylesheet" href="https://unpkg.com/movinwords@1.0.7/dist/movinwords.css">
+  <script src="https://unpkg.com/movinwords@1.0.7/dist/movinwords.min.js"></script>
+  <script defer src="assets/main.js"></script>
+</head>
+
+<body>
+  <header>
+    <img class="header__logo" src="https://a.storyblok.com/f/99692/x/1e8aea55ab/movinwords-logo.svg" alt="Movinwords">
+
+    <a class="btn header__install" href="https://github.com/revueltai/movinwords" target="_blank">Get it sssson
+      Github</a>
+
+    <div class="header__badges">
+      <a href="https://github.com/revueltai/movinwords" target="_blank">
+        <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+      </a>
+
+      <a href="https://github.com/revueltai/movinwords" target="_blank">
+        <img src="https://img.shields.io/npm/v/movinwords">
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div id="ui-options" class="ui-options"></div>
+
+    <div id="ui-example-container" class="ui-example-container">
+
+      <div class="ui-example-container__heading">
+        <span id="btn-code" class="ui-example-container__btn-code"></span>
+      </div>
+
+      <div class="ui-example-container__example">
+        <div id="word"></div>
+        <pre id="pre" class="ui-example-container__code">
+            <code id="code" class="javascript"></code>
+          </pre>
+
+        <button id="ui-button-cta" class="btn btn-cta">Run</button>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
