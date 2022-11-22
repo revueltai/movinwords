@@ -1,5 +1,5 @@
 class Movinwords {
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     this._sentences = null
     this._words = []
     this._started = false
@@ -43,6 +43,10 @@ class Movinwords {
       ...opts
     }
 
+    if (!this._options.el) {
+      throw new Error('No element provided.')
+    }
+
     this._sentences = document.querySelectorAll(this._options.el)
 
     if (this._sentences) {
@@ -55,7 +59,7 @@ class Movinwords {
     }
   }
 
-  _registerEvents () {
+  _registerEvents() {
     const registeredEvents = this._options.events
 
     for (const eventName in registeredEvents) {
@@ -65,7 +69,7 @@ class Movinwords {
     }
   }
 
-  _addEventListener (event, callback) {
+  _addEventListener(event, callback) {
     if (typeof event !== 'string' || typeof callback !== 'function') {
       return false
     }
@@ -79,7 +83,7 @@ class Movinwords {
     this._events[event].listeners.push(callback)
   }
 
-  _emitEvent (event, details) {
+  _emitEvent(event, details) {
     if (this._events[event] === undefined) {
       return false
     }
@@ -89,26 +93,26 @@ class Movinwords {
     })
   }
 
-  _isAllowedEvent (eventName) {
+  _isAllowedEvent(eventName) {
     return this._eventNames.includes(eventName)
   }
 
-  _isEmptyArray (arr) {
+  _isEmptyArray(arr) {
     if (Array.isArray(arr) && arr) {
       return !arr.length
     }
   }
 
-  _isHighlightedWord (word) {
+  _isHighlightedWord(word) {
     const highlightedWordsArr = this._options.highlight.words
     return (highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
   }
 
-  _isLastLetterOfWord (index, total) {
+  _isLastLetterOfWord(index, total) {
     return index === total - 1
   }
 
-  _isLastWordOfSentence (wordStr) {
+  _isLastWordOfSentence(wordStr) {
     let output = false
 
     for (let [index, word] of this._words.entries()) {
@@ -120,14 +124,14 @@ class Movinwords {
     return output
   }
 
-  _setCSSVariables (sentence) {
+  _setCSSVariables(sentence) {
     sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence))
     sentence.style.setProperty('--mw-duration', `${this._options.duration}ms`)
     sentence.style.setProperty('--mw-delay', `${this._options.delay}ms`)
     sentence.style.setProperty('--mw-offset', this._options.offset)
   }
 
-  _getWordSpacing (sentence) {
+  _getWordSpacing(sentence) {
     if (this._options.wordSpacing) {
       return this._options.wordSpacing
     }
@@ -135,23 +139,23 @@ class Movinwords {
     return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
   }
 
-  _getWordsArray (sentence) {
+  _getWordsArray(sentence) {
     this._words = sentence.innerText.trim().split(' ')
     return this._words
   }
 
-  _getLettersArray (word) {
+  _getLettersArray(word) {
     return [...word.innerText]
   }
 
-  _getSentences () {
+  _getSentences() {
     this._sentences.forEach(sentence => {
       sentence.classList.add(this._classNames.base)
       sentence.classList.add(this._options.transition)
     })
   }
 
-  _parseSentences () {
+  _parseSentences() {
     this._sentences.forEach(sentence => {
       this._setCSSVariables(sentence)
       this._createAndAppendWordTags(sentence)
@@ -164,7 +168,7 @@ class Movinwords {
     })
   }
 
-  _appendTags (el, tagsArr) {
+  _appendTags(el, tagsArr) {
     el.innerHTML = ''
 
     for (const tag of tagsArr) {
@@ -172,7 +176,7 @@ class Movinwords {
     }
   }
 
-  _createTag (options) {
+  _createTag(options) {
     const tagEl = document.createElement(options.tag)
     tagEl.className = options.className
     tagEl.innerText = options.text
@@ -184,12 +188,12 @@ class Movinwords {
     return tagEl
   }
 
-  _createAndAppendWordTags (sentence) {
+  _createAndAppendWordTags(sentence) {
     const wordTagsArr = this._createWordTags(sentence)
     this._appendTags(sentence, wordTagsArr)
   }
 
-  _createAndAppendLetterTags (sentence) {
+  _createAndAppendLetterTags(sentence) {
     const words = sentence.querySelectorAll(`.${this._classNames.word}`)
 
     words.forEach((word, index) => {
@@ -198,10 +202,9 @@ class Movinwords {
     })
   }
 
-  _createWordTags (sentence) {
+  _createWordTags(sentence) {
     const wordTagsArr = []
     const words = this._getWordsArray(sentence)
-    let eventPayload = {}
 
     for (const word of words) {
       let tag = 'span'
@@ -222,7 +225,7 @@ class Movinwords {
     return wordTagsArr
   }
 
-  _createLetterTags (word, wordIndex) {
+  _createLetterTags(word, wordIndex) {
     const letterTagsArr = []
     const letters = this._getLettersArray(word)
 
@@ -269,13 +272,13 @@ class Movinwords {
     return letterTagsArr
   }
 
-  _triggerStart () {
+  _triggerStart() {
     this._started = true
     this._emitEvent('start', this._options)
     this._parseSentences()
   }
 
-  _triggerStartOnIntersection () {
+  _triggerStartOnIntersection() {
     if (
       'IntersectionObserver' in window &&
       'IntersectionObserverEntry' in window &&
@@ -298,7 +301,7 @@ class Movinwords {
     }
   }
 
-  start () {
+  start() {
     if (!this._started) {
       if (this._options.intersectionStart) {
         this._triggerStartOnIntersection()
