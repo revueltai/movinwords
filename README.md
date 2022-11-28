@@ -22,7 +22,7 @@ npm install movinwords
 
 ##### With a bundler
 ```js
-import movinwords from 'movinwords';
+import Movinwords from 'movinwords';
 import 'movinwords/movinwords.css'; // Before v.1.0.8 movinwords/dist/movinwords.css
 
 const sentence = new Movinwords({
@@ -53,7 +53,9 @@ const sentence = new Movinwords({
 | `el`                    | `string`  | `null`             | **Required:** Sentence container element.
 | `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
 | `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
-| `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Transitions](#transitions)).
+| `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Transitions](#offset)).
+| `reverseTransition`     | `boolean` | `false`            | Reverses the transition animation ([See Reverse Transition](#reverse-transition)).
+| `reverseOrder`          | `boolean` | `false`            | Reverses the word's appearance order ([See Reverse Order](#reverse-order)).
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
 | `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
@@ -152,7 +154,7 @@ new Movinwords({
 })
 ```
 
-### Offset
+## Offset
 You can define an offset value to be used with `slide` and `reveal` animations.
 This will tell Movinwords how offsetted the words should be from the baseline anchor point (0px).
 
@@ -161,6 +163,33 @@ new Movinwords({
   el: '.my-sentence',
   transition: 'slideInLeft',
   offset: 50 // Words will be 50px offset from the start (0px) and slide in from left to right
+})
+```
+
+## Reverse Transition
+You can reverse the transition animations.
+This will tell Movinwords to execute a reversed version of the transition you have defined.
+_Note: this property makes the transition names counterintuitive, as "In" transitions behave like "out" ones._
+
+```js
+new Movinwords({
+  el: '.my-sentence',
+  transition: 'fadeIn',
+  reverseTransition: true // Transition "fadeIn" will behave like a "fade out" (from opacity 1, to opacity 0).
+})
+```
+
+## Reverse Order
+You can reverse the order in which the words appear/disappear.
+This will tell Movinwords to transition the words the opposite order (Last word of the sentence is the first to transition).
+
+```html
+<h2 class="my-sentence">Hello lovely world!</h2>
+```
+```js
+new Movinwords({
+  el: '.my-sentence',
+  reverseOrder: true // "world!" will appear first, "lovely" second, "Hello" last (From right to left).
 })
 ```
 

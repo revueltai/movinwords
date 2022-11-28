@@ -4,6 +4,8 @@ const exampleOptions = {
   el: '.word',
   autostart: false,
   intersectionStart: false,
+  reverseTransition: true,
+  reverseOrder: true,
   timers: [500, 800, 1000, 2000],
   spacings: [10, 20, 50, 100],
   transitions: [
@@ -135,27 +137,38 @@ const _createOptionsUI = (options) => {
     values: options.spacings,
     dataType: 'wordSpacing'
   })
+  const reverseTransitionCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-reverse-transition',
+    className: 'ui-checkbox-reverse-transition',
+    label: 'Reverse transitions',
+    dataType: 'reverseTransition'
+  })
+  const reverseOrderCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-reverse-direction',
+    className: 'ui-checkbox-reverse-direction',
+    label: 'Reverse Order',
+    dataType: 'reverseOrder'
+  })
   const highlightCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-highlight',
     className: 'ui-checkbox-highlight',
-    label: 'Highlight words?',
+    label: 'Highlight words',
     dataType: 'highlight'
   })
   const eventsCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-events',
     className: 'ui-checkbox-events',
-    label: 'Trigger Events?',
+    label: 'Trigger Events',
     dataType: 'events',
     checked: true
   })
   const intersectionObserverCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-intersection',
     className: 'ui-checkbox-intersection',
-    label: 'Trigger On Intersection?',
+    label: 'Trigger On Intersection',
     dataType: 'intersectionOptions',
     checked: true
   })
-
   const durationContainer = _createContainer({
     el: durationSelect,
     id: 'duration',
@@ -186,6 +199,12 @@ const _createOptionsUI = (options) => {
     label: 'Offset',
     for: 'ui-select-offset'
   })
+  const reverseTransitionContainer = _createContainer({
+    el: reverseTransitionCheckbox
+  })
+  const reverseOrderContainer = _createContainer({
+    el: reverseOrderCheckbox
+  })
   const highlightContainer = _createContainer({
     el: highlightCheckbox
   })
@@ -201,6 +220,8 @@ const _createOptionsUI = (options) => {
   container.appendChild(transitionsContainer)
   container.appendChild(offsetContainer)
   container.appendChild(wordSpacingContainer)
+  container.appendChild(reverseTransitionContainer)
+  container.appendChild(reverseOrderContainer)
   container.appendChild(highlightContainer)
   container.appendChild(eventsContainer)
   container.appendChild(intersectionObserverContainer)
@@ -249,7 +270,7 @@ mw.start();
 
 const _updateOptionsPayload = () => {
   const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing']
-  const checkboxProps = ['highlight', 'events', 'intersectionOptions']
+  const checkboxProps = ['reverseTransition', 'reverseOrder', 'highlight', 'events', 'intersectionOptions']
   const optionsIds = [
     'ui-select-delay',
     'ui-select-duration',
@@ -257,6 +278,8 @@ const _updateOptionsPayload = () => {
     'ui-select-offset',
     'ui-select-word-spacing',
     'ui-select-transitions',
+    'ui-checkbox-reverse-transition',
+    'ui-checkbox-reverse-direction',
     'ui-checkbox-highlight',
     'ui-checkbox-events',
     'ui-checkbox-intersection',

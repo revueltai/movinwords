@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { JSDOM } from 'jsdom'
 import Movinwords from '../package/movinwords'
 
 describe('Movinwords', () => {
@@ -33,6 +34,10 @@ describe('Movinwords', () => {
 
     beforeEach(() => {
       startMock.mockClear()
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
     })
 
     it('should autostart when the autostart option is NOT provided', () => {
@@ -115,6 +120,124 @@ describe('Movinwords', () => {
       expect(mw._options.events.end()).toBe('End callback triggered')
       expect(mw._options.events.wordTransitionStart()).toBe('WordTransitionStart callback triggered')
       expect(mw._options.events.wordTransitionEnd()).toBe('WordTransitionEnd callback triggered')
+    })
+  })
+
+  describe('Words', () => {
+    beforeEach(() => {
+      const dom = new JSDOM(`<!doctype html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+          </head>
+          <body>
+            <div class="foobar">Hello lovely world!</div>
+            <p class="ignore">Some element to be ignored.</p>
+            <p class="foobar">I'm Movinwords!</p>
+          </body>
+        </html>`)
+
+      global.window = dom.window
+      global.document = dom.window.document
+    })
+
+    it('should have an array of words matching the amount of given sentences', () => {
+      const mw = new Movinwords({
+        el: '.foobar'
+      })
+
+      expect(mw._sentences).toHaveLength(2)
+      expect(mw._words).toHaveLength(2)
+    })
+
+    it('should highlight the given words', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        highlight: {
+          classname: 'highlight',
+          tag: 'strong',
+          words: ['world!', 'Hello', 'Movinwords!']
+        }
+      })
+
+      const rs = document.querySelectorAll('.foobar .highlight')
+
+      expect(rs).toHaveLength(3)
+    })
+
+    it('should not highlight any of the given words', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        highlight: {
+          classname: 'highlight',
+          tag: 'strong',
+          words: ['world', 'love', 'Movinwords', 'foobar']
+        }
+      })
+
+      const rs = document.querySelectorAll('.foobar .highlight')
+
+      expect(rs).toHaveLength(0)
+    })
+
+    it('should apply the given transition name to the given sentences', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        transition: 'slideInTop'
+      })
+
+      const firstSentence = document.querySelector('.mw')
+      const rs = firstSentence.classList.contains('slideInTop')
+
+      expect(rs).toBe(true)
+    })
+
+    it('should apply the given offset, delay, word spacing and duration to the given sentences', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        offset: 40,
+        delay: 1200,
+        wordSpacing: 50,
+        duration: 2000
+      })
+
+      const firstSentence = document.querySelector('.mw')
+      const styles = window.getComputedStyle(firstSentence)
+      const rs1 = styles.getPropertyValue('--mw-offset')
+      const rs2 = styles.getPropertyValue('--mw-delay')
+      const rs3 = styles.getPropertyValue('--mw-word-spacing')
+      const rs4 = styles.getPropertyValue('--mw-duration')
+
+      expect(rs1).toBe('40')
+      expect(rs2).toBe('1200ms')
+      expect(rs3).toBe('50')
+      expect(rs4).toBe('2000ms')
+    })
+
+    it('should reverse transition the given sentences', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        reverseTransition: true
+      })
+
+      const rs = document.querySelectorAll('.mw.mw-r')
+
+      expect(rs).toHaveLength(2)
+    })
+
+    it('should reverse order the given sentences', () => {
+      const mw = new Movinwords({
+        el: '.foobar',
+        reverseOrder: true
+      })
+
+      const firstSentence = document.querySelector('.mw')
+      const words = firstSentence.querySelectorAll('.mw-w')
+      const lastWord = words[words.length - 1]
+      const lastWordFirstLetter = lastWord.querySelectorAll('.mw-l')[0]
+      const rs = window.getComputedStyle(lastWordFirstLetter).getPropertyValue('--mw-w')
+
+      expect(rs).toBe('0')
     })
   })
 })

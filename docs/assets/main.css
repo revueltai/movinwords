@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap');
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -182,8 +184,16 @@ Example Options
 }
 
 .ui-option label {
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  justify-items: flex-start;
+  gap: 8px;
   margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.ui-option label input {
+  margin: 0;
 }
 
 /*

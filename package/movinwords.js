@@ -17,7 +17,8 @@ class Movinwords {
     this._classNames = {
       base: 'mw',
       word: 'mw-w',
-      letter: 'mw-l'
+      letter: 'mw-l',
+      reverse: 'mw-r'
     }
 
     this._options = {
@@ -25,6 +26,8 @@ class Movinwords {
       duration: 1000,
       delay: 100,
       offset: 20,
+      reverseTransition: false,
+      reverseOrder: false,
       transition: 'fadeIn',
       wordSpacing: null,
       highlight: {
@@ -131,6 +134,13 @@ class Movinwords {
     sentence.style.setProperty('--mw-offset', this._options.offset)
   }
 
+  _getWordIndex(index, words) {
+    const realIndex = index + 1
+    return this._options.reverseOrder
+      ? words.length - realIndex
+      : realIndex
+  }
+
   _getWordSpacing(sentence) {
     if (this._options.wordSpacing) {
       return this._options.wordSpacing
@@ -140,23 +150,27 @@ class Movinwords {
   }
 
   _getWordsArray(sentence) {
-    this._words = sentence.innerText.trim().split(' ')
+    this._words = sentence.textContent.trim().split(' ')
     return this._words
   }
 
   _getLettersArray(word) {
-    return [...word.innerText]
+    return [...word.textContent]
   }
 
   _getSentences() {
-    this._sentences.forEach(sentence => {
+    for (const sentence of this._sentences) {
       sentence.classList.add(this._classNames.base)
       sentence.classList.add(this._options.transition)
-    })
+
+      if (this._options.reverseTransition) {
+        sentence.classList.add(this._classNames.reverse)
+      }
+    }
   }
 
   _parseSentences() {
-    this._sentences.forEach(sentence => {
+    for (const sentence of this._sentences) {
       this._setCSSVariables(sentence)
       this._createAndAppendWordTags(sentence)
       this._createAndAppendLetterTags(sentence)
@@ -165,7 +179,7 @@ class Movinwords {
         sentence.classList.add(this._visible)
         delete sentence.dataset[this._classNames.base]
       }, 100)
-    })
+    }
   }
 
   _appendTags(el, tagsArr) {
@@ -179,7 +193,7 @@ class Movinwords {
   _createTag(options) {
     const tagEl = document.createElement(options.tag)
     tagEl.className = options.className
-    tagEl.innerText = options.text
+    tagEl.textContent = options.text
 
     for (const varName in options.vars) {
       tagEl.style.setProperty(`--mw-${varName}`, options.vars[varName])
@@ -197,7 +211,7 @@ class Movinwords {
     const words = sentence.querySelectorAll(`.${this._classNames.word}`)
 
     words.forEach((word, index) => {
-      const letterTagsArr = this._createLetterTags(word, index + 1)
+      const letterTagsArr = this._createLetterTags(word, this._getWordIndex(index, words))
       this._appendTags(word, letterTagsArr)
     })
   }
@@ -245,7 +259,7 @@ class Movinwords {
           ...this._options,
           word: {
             el: word,
-            text: word.innerText
+            text: word.textContent
           }
         }
 
@@ -259,7 +273,7 @@ class Movinwords {
           if (event.propertyName === this._options.eventsTransitionProperty) {
             this._emitEvent(`wordTransitionEnd`, payload)
 
-            if (this._isLastWordOfSentence(word.innerText)) {
+            if (this._isLastWordOfSentence(word.textContent)) {
               this._emitEvent('end', this._options)
             }
           }
