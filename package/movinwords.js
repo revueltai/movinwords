@@ -2,6 +2,7 @@ class Movinwords {
   constructor(opts = {}) {
     this._sentences = null
     this._words = []
+    this.currentLetterIndex = 0
     this._started = false
     this._visible = '--v'
     this._events = {}
@@ -18,7 +19,8 @@ class Movinwords {
       base: 'mw',
       word: 'mw-w',
       letter: 'mw-l',
-      reverse: 'mw-r'
+      reverse: 'mw-r',
+      animateLetters: 'mw-al'
     }
 
     this._options = {
@@ -26,6 +28,7 @@ class Movinwords {
       duration: 1000,
       delay: 100,
       offset: 20,
+      animateLetters: false,
       reverseTransition: false,
       reverseOrder: false,
       transition: 'fadeIn',
@@ -166,6 +169,10 @@ class Movinwords {
       if (this._options.reverseTransition) {
         sentence.classList.add(this._classNames.reverse)
       }
+
+      if (this._options.animateLetters) {
+        sentence.classList.add(this._classNames.animateLetters)
+      }
     }
   }
 
@@ -239,48 +246,63 @@ class Movinwords {
     return wordTagsArr
   }
 
+  _createLetterElement(letter, letters, index, wordIndex) {
+    const payload = {
+      tag: 'span',
+      className: `${this._classNames.letter}`,
+      text: letter,
+      vars: {
+        w: wordIndex,
+        l: index
+      }
+    }
+
+    if (this._options.animateLetters) {
+      payload.vars.t = letters.length
+      payload.vars.l = this.currentLetterIndex++
+    }
+
+    return this._createTag(payload)
+  }
+
+  _addLetterEventListeners(word, letterEl) {
+    const payload = {
+      ...this._options,
+      word: {
+        el: word,
+        text: word.textContent
+      }
+    }
+
+    letterEl.addEventListener('transitionstart', (event) => {
+      if (event.propertyName === this._options.eventsTransitionProperty) {
+        this._emitEvent(`wordTransitionStart`, payload)
+      }
+    })
+
+    letterEl.addEventListener('transitionend', (event) => {
+      if (event.propertyName === this._options.eventsTransitionProperty) {
+        this._emitEvent(`wordTransitionEnd`, payload)
+
+        if (this._isLastWordOfSentence(word.textContent)) {
+          this._emitEvent('end', this._options)
+        }
+      }
+    })
+  }
+
   _createLetterTags(word, wordIndex) {
     const letterTagsArr = []
     const letters = this._getLettersArray(word)
 
     for (const [index, letter] of letters.entries()) {
-      const tagEl = this._createTag({
-        tag: 'span',
-        className: `${this._classNames.letter}`,
-        text: letter,
-        vars: {
-          w: wordIndex,
-          l: index
-        }
-      })
+      const letterEl = this._createLetterElement(letter, letters, index, wordIndex)
 
       if (this._isLastLetterOfWord(index, letters.length)) {
-        const payload = {
-          ...this._options,
-          word: {
-            el: word,
-            text: word.textContent
-          }
-        }
-
-        tagEl.addEventListener('transitionstart', (event) => {
-          if (event.propertyName === this._options.eventsTransitionProperty) {
-            this._emitEvent(`wordTransitionStart`, payload)
-          }
-        })
-
-        tagEl.addEventListener('transitionend', (event) => {
-          if (event.propertyName === this._options.eventsTransitionProperty) {
-            this._emitEvent(`wordTransitionEnd`, payload)
-
-            if (this._isLastWordOfSentence(word.textContent)) {
-              this._emitEvent('end', this._options)
-            }
-          }
-        })
+        this._addLetterEventListeners(word, letterEl)
       }
 
-      letterTagsArr.push(tagEl)
+      letterTagsArr.push(letterEl)
     }
 
     return letterTagsArr

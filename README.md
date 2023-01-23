@@ -1,7 +1,7 @@
 ![movinwords](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
 
 # movinwords
-A plugin to animate sentences and words.
+A plugin to animate sentences, words and letters.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
@@ -53,9 +53,10 @@ const sentence = new Movinwords({
 | `el`                    | `string`  | `null`             | **Required:** Sentence container element.
 | `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
 | `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
-| `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Transitions](#offset)).
+| `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Offset](#offset)).
 | `reverseTransition`     | `boolean` | `false`            | Reverses the transition animation ([See Reverse Transition](#reverse-transition)).
 | `reverseOrder`          | `boolean` | `false`            | Reverses the word's appearance order ([See Reverse Order](#reverse-order)).
+| `animateLetters`        | `boolean` | `false`            | Animates the individual letters of a sentence ([See Animate Letters](#animate-letters)).
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
 | `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
@@ -247,6 +248,21 @@ new Movinwords({
     threshold: 0,
     rootMargin: '0px'
   }
+})
+```
+
+## Animate Letters
+By default Movinwords animates the words in a sentence.
+If you wish to animate each single letter in a word instead you can set `animateLetters` to `true`.
+
+```html
+<h2 class="my-sentence">Hello lovely world!</h2>
+```
+```js
+new Movinwords({
+  el: '.my-sentence',
+  transition: 'slideInBottom',
+  animateLetters: true // Each letter will slide in from the bottom
 })
 ```
 

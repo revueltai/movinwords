@@ -28,7 +28,15 @@
     position: relative;
     display: inline-block;
     transition-duration: var(--mw-duration);
+  }
+
+  // Letter Configuration
+  &:not(.mw-al) .mw-l {
     transition-delay: calc(var(--mw-delay) * var(--mw-w));
+  }
+
+  &.mw-al .mw-l {
+    transition-delay: calc(var(--mw-delay) * var(--mw-l));
   }
 
   // Transitions
@@ -36,7 +44,7 @@
     opacity: 0;
     transition-property: opacity;
     transition-timing-function: ease-out;
-    will-chage: opacity;
+    will-change: opacity;
   }
 
   &.slideInLeft .mw-l {
@@ -66,7 +74,7 @@
     opacity: 0;
     transition-property: opacity, transform;
     transition-timing-function: ease-out;
-    will-chage: opacity, transform;
+    will-change: opacity, transform;
   }
 
   &.fadeIn.--v .mw-l,

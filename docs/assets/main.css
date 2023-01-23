@@ -40,8 +40,7 @@ main {
 }
 
 select {
-  margin-right: 10px;
-  margin-bottom: 10px;
+  width: 100%;
   border-radius: 5px;
   padding: 5px 8px;
 }
@@ -159,7 +158,6 @@ Header
 .header__install {
   padding: 22px 36px;
   margin-top: 24px;
-  margin-bottom: 40px;
 }
 
 /*
@@ -167,9 +165,27 @@ Header
 Example Options
 */
 
+main {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 24px;
+  grid-row-gap: 0px;
+}
+
 .ui-options {
+  max-width: 200px;
+}
+
+.dropdowns,
+.checkboxes {
   display: flex;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkboxes {
+  margin-top: 16px;
 }
 
 .ui-option {
@@ -179,16 +195,12 @@ Example Options
   min-width: 100px;
 }
 
-.ui-option:not(:last-child) {
-  margin-right: 10px;
-}
-
 .ui-option label {
   display: flex;
   align-items: flex-start;
   justify-items: flex-start;
   gap: 8px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   font-size: 14px;
 }
 

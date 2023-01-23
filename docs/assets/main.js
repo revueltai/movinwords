@@ -6,7 +6,8 @@ const exampleOptions = {
   intersectionStart: false,
   reverseTransition: true,
   reverseOrder: true,
-  timers: [500, 800, 1000, 2000],
+  animateLetters: true,
+  timers: [0, 100, 200, 500, 800, 1000, 2000],
   spacings: [10, 20, 50, 100],
   transitions: [
     'slideInTop',
@@ -75,6 +76,11 @@ const _createSelect = (options) => {
     const option = document.createElement('option')
     option.text = value
     option.value = value
+
+    if (options.selected && options.selected === value) {
+      option.selected = true
+    }
+
     selectEl.options.add(option)
   }
 
@@ -105,18 +111,21 @@ const _createContainer = (options) => {
 }
 
 const _createOptionsUI = (options) => {
-  const container = document.getElementById('ui-options')
+  const dropdowns = document.getElementById('dropdowns')
+  const checkboxes = document.getElementById('checkboxes')
 
   const durationSelect = _createSelect({
     id: 'ui-select-duration',
     className: 'ui-select-duration',
     values: options.timers,
+    selected: 500,
     dataType: 'duration'
   })
   const delaySelect = _createSelect({
     id: 'ui-select-delay',
     className: 'ui-select-delay',
     values: options.timers,
+    selected: 500,
     dataType: 'delay'
   })
   const transitionsSelect = _createSelect({
@@ -169,6 +178,13 @@ const _createOptionsUI = (options) => {
     dataType: 'intersectionOptions',
     checked: true
   })
+  const animateLettersCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-animate-letters',
+    className: 'ui-checkbox-animate-letters',
+    label: 'Animate Letters',
+    dataType: 'animateLetters',
+    checked: false
+  })
   const durationContainer = _createContainer({
     el: durationSelect,
     id: 'duration',
@@ -205,6 +221,9 @@ const _createOptionsUI = (options) => {
   const reverseOrderContainer = _createContainer({
     el: reverseOrderCheckbox
   })
+  const animateLettersContainer = _createContainer({
+    el: animateLettersCheckbox
+  })
   const highlightContainer = _createContainer({
     el: highlightCheckbox
   })
@@ -215,16 +234,19 @@ const _createOptionsUI = (options) => {
     el: intersectionObserverCheckbox
   })
 
-  container.appendChild(durationContainer)
-  container.appendChild(delayContainer)
-  container.appendChild(transitionsContainer)
-  container.appendChild(offsetContainer)
-  container.appendChild(wordSpacingContainer)
-  container.appendChild(reverseTransitionContainer)
-  container.appendChild(reverseOrderContainer)
-  container.appendChild(highlightContainer)
-  container.appendChild(eventsContainer)
-  container.appendChild(intersectionObserverContainer)
+
+  dropdowns.appendChild(durationContainer)
+  dropdowns.appendChild(delayContainer)
+  dropdowns.appendChild(transitionsContainer)
+  dropdowns.appendChild(offsetContainer)
+  dropdowns.appendChild(wordSpacingContainer)
+
+  checkboxes.appendChild(reverseTransitionContainer)
+  checkboxes.appendChild(reverseOrderContainer)
+  checkboxes.appendChild(highlightContainer)
+  checkboxes.appendChild(eventsContainer)
+  checkboxes.appendChild(intersectionObserverContainer)
+  checkboxes.appendChild(animateLettersContainer)
 }
 
 const _prepareSentence = () => {
@@ -270,7 +292,7 @@ mw.start();
 
 const _updateOptionsPayload = () => {
   const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing']
-  const checkboxProps = ['reverseTransition', 'reverseOrder', 'highlight', 'events', 'intersectionOptions']
+  const checkboxProps = ['reverseTransition', 'reverseOrder', 'highlight', 'events', 'intersectionOptions', 'animateLetters']
   const optionsIds = [
     'ui-select-delay',
     'ui-select-duration',
@@ -283,6 +305,7 @@ const _updateOptionsPayload = () => {
     'ui-checkbox-highlight',
     'ui-checkbox-events',
     'ui-checkbox-intersection',
+    'ui-checkbox-animate-letters',
   ]
 
   let payload = {
