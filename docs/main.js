@@ -341,8 +341,12 @@ const _initExample = () => {
   _prepareSentence()
   _appendCode()
 
-  const mw = new Movinwords(opts)
-  mw.start()
+  try {
+    const mw = new Movinwords(opts)
+    mw.start()
+  } catch (error) {
+    throw error
+  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

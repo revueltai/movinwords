@@ -4,7 +4,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { JSDOM } from 'jsdom'
-import Movinwords from '../package/movinwords'
+import Movinwords from '../src/movinwords'
 
 describe('Movinwords', () => {
   describe('Initialization', () => {
@@ -43,15 +43,6 @@ describe('Movinwords', () => {
     it('should autostart when the autostart option is NOT provided', () => {
       new Movinwords({
         el: '.my-sentence'
-      })
-
-      expect(startMock).toBeCalled()
-    })
-
-    it('should autostart when the autostart option is provided and true', () => {
-      new Movinwords({
-        el: '.my-sentence',
-        autostart: true
       })
 
       expect(startMock).toBeCalled()

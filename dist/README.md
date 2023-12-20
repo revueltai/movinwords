@@ -5,10 +5,14 @@ A plugin to animate sentences, words and letters.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
+## Playground
+
+Check out the playground [here](https://revueltai.github.io/movinwords/).
+
 ## Installation
 
 ```sh
-npm install movinwords
+npm install movinwords # yarn movinwords
 ```
 
 ## Usage
@@ -265,6 +269,3 @@ new Movinwords({
   animateLetters: true // Each letter will slide in from the bottom
 })
 ```
-
-## Sandbox
-Check out the sandbox [here](https://revueltai.github.io/movinwords/).
