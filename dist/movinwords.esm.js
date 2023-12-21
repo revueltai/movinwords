@@ -46,7 +46,8 @@ class Movinwords {
       reverseTransition: false,
       reverseOrder: false,
       transition: "fadeIn",
-      wordSpacing: null,
+      wordSpacing: 0,
+      letterSpacing: 0,
       highlight: {
         classname: "highlight",
         tag: "strong",
@@ -124,7 +125,8 @@ class Movinwords {
     return output;
   }
   _setCSSVariables(sentence) {
-    sentence.style.setProperty("--mw-word-spacing", String(this._getWordSpacing(sentence)));
+    sentence.style.setProperty("--mw-word-spacing", String(this._getSpacing(sentence)));
+    sentence.style.setProperty("--mw-letter-spacing", String(this._getSpacing(sentence, "letter")));
     sentence.style.setProperty("--mw-duration", `${this._options.duration}ms`);
     sentence.style.setProperty("--mw-delay", `${this._options.delay}ms`);
     sentence.style.setProperty("--mw-offset", String(this._options.offset));
@@ -133,11 +135,12 @@ class Movinwords {
     const realIndex = index + 1;
     return this._options.reverseOrder ? words.length - realIndex : realIndex;
   }
-  _getWordSpacing(sentence) {
-    if (this._options.wordSpacing) {
-      return this._options.wordSpacing;
+  _getSpacing(sentence, type = "word") {
+    const spacing = type === "word" ? this._options.wordSpacing : this._options.letterSpacing;
+    if (spacing) {
+      return spacing;
     }
-    return parseInt(window.getComputedStyle(sentence, null).getPropertyValue("font-size")) * 0.4;
+    return type === "word" ? parseInt(window.getComputedStyle(sentence, null).getPropertyValue("font-size")) * 0.4 : 0;
   }
   _getWordsArray(sentence) {
     if (sentence.textContent) {

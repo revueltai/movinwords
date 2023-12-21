@@ -30,6 +30,10 @@
     transition-duration: var(--mw-duration);
   }
 
+  .mw-l:not(:last-child) {
+    margin-right: calc(var(--mw-letter-spacing) * 1px);
+  }
+
   // Letter Configuration
   &:not(.mw-al) .mw-l {
     transition-delay: calc(var(--mw-delay) * var(--mw-w));

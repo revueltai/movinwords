@@ -65,6 +65,7 @@ const sentence = new Movinwords({
 | `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
+| `letterSpacing`         | `number`  | `null`             | Space gap between each letter. ([See Letter Spacing](#letter-spacing))
 | `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
 | `events`                | `object`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
 | `eventsTransitionProperty`                | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
@@ -203,7 +204,16 @@ By default Movinwords will calculate the space between words based on the senten
 ```js
 new Movinwords({
   el: '.my-sentence',
-  wordSpacing: 50 // Will force a 50px space between each word.
+  wordSpacing: 50 // Will set a 50px space between each word.
+})
+```
+
+## Letter Spacing
+You can provide a space between each letter:
+```js
+new Movinwords({
+  el: '.my-sentence',
+  letterSpacing: 50 // Will set a 50px space between each letter.
 })
 ```
 

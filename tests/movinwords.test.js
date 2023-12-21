@@ -188,12 +188,13 @@ describe('Movinwords', () => {
       expect(rs).toBe(true)
     })
 
-    it('should apply the given offset, delay, word spacing and duration to the given sentences', () => {
+    it('should apply the given offset, delay, word spacing, letter spacing and duration to the given sentences', () => {
       const mw = new Movinwords({
         el: '.foobar',
         offset: 40,
         delay: 1200,
         wordSpacing: 50,
+        letterSpacing: 100,
         duration: 2000
       })
 
@@ -202,12 +203,14 @@ describe('Movinwords', () => {
       const rs1 = styles.getPropertyValue('--mw-offset')
       const rs2 = styles.getPropertyValue('--mw-delay')
       const rs3 = styles.getPropertyValue('--mw-word-spacing')
-      const rs4 = styles.getPropertyValue('--mw-duration')
+      const rs4 = styles.getPropertyValue('--mw-letter-spacing')
+      const rs5 = styles.getPropertyValue('--mw-duration')
 
       expect(rs1).toBe('40')
       expect(rs2).toBe('1200ms')
       expect(rs3).toBe('50')
-      expect(rs4).toBe('2000ms')
+      expect(rs4).toBe('100')
+      expect(rs5).toBe('2000ms')
     })
 
     it('should reverse transition the given sentences', () => {

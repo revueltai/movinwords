@@ -35,6 +35,7 @@ export interface MwOptions {
   reverseOrder: boolean
   transition: string
   wordSpacing: number | null
+  letterSpacing: number | null
   highlight: MwHighlightOptions
   events: MwEventListeners
   eventsTransitionProperty: string
