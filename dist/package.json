@@ -1,6 +1,6 @@
 {
   "name": "movinwords",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "Ignacio 'Nacho' Revuelta - iamnacho.com",
   "description": "Add animation to your words and sentences.",
   "license": "MIT",
@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/revueltai/movinwords/issues"
   },
-  "homepage": "https://github.com/revueltai/movinwords"
+  "homepage": "https://github.com/revueltai/movinwords",
+  "release": {
+    "branches": [
+      "main"
+    ]
+  }
 }
