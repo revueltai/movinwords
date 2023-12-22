@@ -26,6 +26,7 @@ export interface MwHighlightOptions {
 
 export interface MwOptions {
   el: string
+  sentence?: string
   autostart: boolean
   duration: number
   delay: number

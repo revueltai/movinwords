@@ -15,11 +15,15 @@ Check out the playground [here](https://revueltai.github.io/movinwords/).
 npm install movinwords # yarn movinwords
 ```
 
-## Usage
+## Basic Usage
 
 #### HTML
 ```html
+<!-- Get Movinwords to animate a given sentence -->
 <h1 class="my-sentence">I am an animated sentence.</h1>
+
+<!-- Or you can provide the sentence dynamically -->
+<h1 class="my-injected-sentence"></h1>
 ```
 
 #### JS & CSS
@@ -31,6 +35,11 @@ import 'movinwords/movinwords.css'; // Before v.1.0.8 movinwords/dist/movinwords
 
 const sentence = new Movinwords({
   el: '.my-sentence'
+});
+
+const injectedSentence = new Movinwords({
+  el: '.my-injected-sentence',
+  sentence: 'Hello world, I am a sentence!'
 });
 ```
 
@@ -47,6 +56,11 @@ const sentence = new Movinwords({
     const sentence = new Movinwords({
       el: '.my-sentence'
     });
+
+    const injectedSentence = new Movinwords({
+      el: '.my-injected-sentence',
+      sentence: 'Hello world, I am a sentence!'
+    });
   })();
 </script>
 ```
@@ -55,6 +69,7 @@ const sentence = new Movinwords({
 | Option                  | Type      | Default                | Description                                                                                                                                                                                                                                                                                        |
 | ----------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `el`                    | `string`  | `null`             | **Required:** Sentence container element.
+| `sentence`              | `string`  | `''`               | Sentence you want to inject dynamically.
 | `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
 | `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
 | `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Offset](#offset)).

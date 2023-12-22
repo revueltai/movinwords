@@ -2,6 +2,7 @@ let opts = {}
 const activeClass = 'active'
 const exampleOptions = {
   el: '.word',
+  sentence: '',
   autostart: false,
   intersectionStart: false,
   reverseTransition: true,
@@ -51,6 +52,16 @@ const _createLabel = (options) => {
   labelEl.innerText = options.label
 
   return labelEl
+}
+
+const _createInputText = (options) => {
+  const inputEl = document.createElement('input')
+  inputEl.type = 'search'
+  inputEl.placeholder = options.placeholder
+  inputEl.id = options.id || ''
+  inputEl.dataset.type = options.dataType
+
+  return inputEl
 }
 
 const _createInputCheckbox = (options) => {
@@ -111,8 +122,16 @@ const _createContainer = (options) => {
 }
 
 const _createOptionsUI = (options) => {
+  const texts = document.getElementById('texts')
   const dropdowns = document.getElementById('dropdowns')
   const checkboxes = document.getElementById('checkboxes')
+
+  const sentenceInput = _createInputText({
+    id: 'ui-input-sentence',
+    className: 'ui-input-sentence',
+    dataType: 'sentence',
+    placeholder: 'Enter sentence to inject'
+  })
 
   const durationSelect = _createSelect({
     id: 'ui-select-duration',
@@ -205,6 +224,14 @@ const _createOptionsUI = (options) => {
     checked: false
   })
 
+  // Containers
+  const sentenceContainer = _createContainer({
+    el: sentenceInput,
+    id: 'sentence',
+    label: 'Dynamic Sentence',
+    for: 'ui-input-sentence'
+  })
+
   const durationContainer = _createContainer({
     el: durationSelect,
     id: 'duration',
@@ -270,6 +297,8 @@ const _createOptionsUI = (options) => {
     el: intersectionObserverCheckbox
   })
 
+  texts.appendChild(sentenceContainer)
+
   dropdowns.appendChild(durationContainer)
   dropdowns.appendChild(delayContainer)
   dropdowns.appendChild(transitionsContainer)
@@ -288,6 +317,7 @@ const _createOptionsUI = (options) => {
 const _prepareSentence = () => {
   const elWord = document.getElementById('word')
   const spanEl = document.createElement('span')
+
   spanEl.className = 'word'
   spanEl.innerText = 'Hello world! This is Movinwords! 👋'
 
@@ -327,9 +357,11 @@ mw.start();
 }
 
 const _updateOptionsPayload = () => {
+  const textProps = ['sentence']
   const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing', 'letterSpacing']
   const checkboxProps = ['reverseTransition', 'reverseOrder', 'highlight', 'events', 'intersectionOptions', 'animateLetters']
   const optionsIds = [
+    'ui-input-sentence',
     'ui-select-delay',
     'ui-select-duration',
     'ui-select-transitions',
@@ -351,9 +383,15 @@ const _updateOptionsPayload = () => {
     intersectionStart: exampleOptions.intersectionStart
   }
 
+  console.log(document.getElementById('sentence'));
+
   for (const id of optionsIds) {
     const el = document.getElementById(id)
     const prop = el.dataset.type
+
+    if (textProps.includes(prop)) {
+      payload[prop] = el.value
+    }
 
     if (dropdownProps.includes(prop)) {
       payload[prop] = el.value

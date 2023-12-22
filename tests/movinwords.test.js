@@ -19,10 +19,7 @@ describe('Movinwords', () => {
     })
 
     it('should throw an error when no options payload is provided', () => {
-      const rs = () => {
-        const mw = new Movinwords()
-      }
-
+      const rs = () => new Movinwords()
       expect(rs).toThrow()
     })
   })
@@ -125,6 +122,7 @@ describe('Movinwords', () => {
             <div class="foobar">Hello lovely world!</div>
             <p class="ignore">Some element to be ignored.</p>
             <p class="foobar">I'm Movinwords!</p>
+            <p class="injected"></p>
           </body>
         </html>`)
 
@@ -147,7 +145,7 @@ describe('Movinwords', () => {
     })
 
     it('should highlight the given words', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar',
         highlight: {
           classname: 'highlight',
@@ -176,8 +174,21 @@ describe('Movinwords', () => {
       expect(rs).toHaveLength(0)
     })
 
+    it('should inject the given sentence if the sentence prop provided', () => {
+      new Movinwords({
+        el: '.injected',
+        sentence: 'injected sentence!'
+      })
+
+      const expected = `<span class="mw-w"><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 0;">i</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 1;">n</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 2;">j</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 3;">e</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 4;">c</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 5;">t</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 6;">e</span><span class="mw-l" style="--mw-t: null; --mw-w: 1; --mw-l: 7;">d</span></span><span class="mw-w"><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 0;">s</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 1;">e</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 2;">n</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 3;">t</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 4;">e</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 5;">n</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 6;">c</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 7;">e</span><span class="mw-l" style="--mw-t: null; --mw-w: 2; --mw-l: 8;">!</span></span>`
+
+      const rs = document.querySelector('.injected')
+
+      expect(rs.innerHTML).toBe(expected)
+    })
+
     it('should apply the given transition name to the given sentences', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar',
         transition: 'slideInTop'
       })
@@ -189,7 +200,7 @@ describe('Movinwords', () => {
     })
 
     it('should apply the given offset, delay, word spacing, letter spacing and duration to the given sentences', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar',
         offset: 40,
         delay: 1200,
@@ -214,7 +225,7 @@ describe('Movinwords', () => {
     })
 
     it('should reverse transition the given sentences', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar',
         reverseTransition: true
       })
@@ -225,7 +236,7 @@ describe('Movinwords', () => {
     })
 
     it('should reverse order the given sentences', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar',
         reverseOrder: true
       })
@@ -240,7 +251,7 @@ describe('Movinwords', () => {
     })
 
     it('should append a numeric index to each letter of a word, in a sequential order, based on the letter position inside that word', () => {
-      const mw = new Movinwords({
+      new Movinwords({
         el: '.foobar'
       })
 

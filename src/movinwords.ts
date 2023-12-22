@@ -43,6 +43,7 @@ class Movinwords {
 
     this._options = {
       el: '',
+      sentence: '',
       autostart: true,
       duration: 1000,
       delay: 100,
@@ -198,6 +199,10 @@ class Movinwords {
   _getSentences() {
     if (this._sentences) {
       for (const sentence of this._sentences) {
+        if (this._options.sentence) {
+          sentence.innerHTML = this._options.sentence
+        }
+
         sentence.classList.add(this._classNames.base)
         sentence.classList.add(this._options.transition)
 
