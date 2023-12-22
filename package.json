@@ -13,10 +13,10 @@
   "type": "module",
   "source": "src/movinwords.ts",
   "types": "src/types/movinwords.d.ts",
-  "main": "movinwords.js",
-  "module": "movinwords.esm.js",
-  "browser": "movinwords.min.js",
-  "unpkg": "movinwords.umd.js",
+  "main": "dist/movinwords.js",
+  "module": "dist/movinwords.esm.js",
+  "browser": "dist/movinwords.min.js",
+  "unpkg": "dist/movinwords.umd.js",
   "scripts": {
     "prepare": "husky install",
     "build:docs": "TARGET=docs vite build",
@@ -25,7 +25,10 @@
     "start:docs": "yarn build:docs && vite",
     "test": "vitest run --coverage"
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revueltai/movinwords.git"
