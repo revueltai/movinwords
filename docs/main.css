@@ -39,6 +39,7 @@ main {
   padding: 0 32px 32px;
 }
 
+input[type=search],
 select {
   width: 100%;
   border-radius: 5px;
@@ -177,6 +178,7 @@ main {
   max-width: 200px;
 }
 
+.texts,
 .dropdowns,
 .checkboxes {
   display: flex;
@@ -184,6 +186,7 @@ main {
   gap: 8px;
 }
 
+.dropdowns,
 .checkboxes {
   margin-top: 16px;
 }

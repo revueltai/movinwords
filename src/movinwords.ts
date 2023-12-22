@@ -1,5 +1,23 @@
+import type {
+  MwClassNames,
+  MwEventName,
+  MwEventListeners,
+  MwOptions,
+  MwWordTag,
+} from './types/movinwords'
+
 class Movinwords {
-  constructor(opts = {}) {
+  private _sentences: NodeListOf<HTMLElement> | null
+  private _words: string[]
+  private currentLetterIndex: number
+  private _started: boolean
+  private _visible: string
+  private _events: MwEventListeners
+  private _eventNames: MwEventName[]
+  private _classNames: MwClassNames
+  private _options: MwOptions
+
+  constructor(opts: MwOptions | {} = {}) {
     this._sentences = null
     this._words = []
     this.currentLetterIndex = 0
@@ -24,6 +42,8 @@ class Movinwords {
     }
 
     this._options = {
+      el: '',
+      sentence: '',
       autostart: true,
       duration: 1000,
       delay: 100,
@@ -32,7 +52,8 @@ class Movinwords {
       reverseTransition: false,
       reverseOrder: false,
       transition: 'fadeIn',
-      wordSpacing: null,
+      wordSpacing: 0,
+      letterSpacing: 0,
       highlight: {
         classname: 'highlight',
         tag: 'strong',
@@ -66,16 +87,20 @@ class Movinwords {
   }
 
   _registerEvents() {
-    const registeredEvents = this._options.events
+    const registeredEvents: any = this._options.events
 
     for (const eventName in registeredEvents) {
-      if (registeredEvents.hasOwnProperty(eventName) && this._isAllowedEvent(eventName)) {
-        this._addEventListener(eventName, registeredEvents[eventName])
+
+      if (
+        registeredEvents.hasOwnProperty(eventName) &&
+        this._isAllowedEvent(eventName as MwEventName)
+      ) {
+        this._addEventListener(eventName, registeredEvents[eventName as MwEventName])
       }
     }
   }
 
-  _addEventListener(event, callback) {
+  _addEventListener(event: string, callback: Function) {
     if (typeof event !== 'string' || typeof callback !== 'function') {
       return false
     }
@@ -86,39 +111,37 @@ class Movinwords {
       }
     }
 
-    this._events[event].listeners.push(callback)
+    (this._events[event].listeners as Function[]).push(callback)
   }
 
-  _emitEvent(event, details) {
+  _emitEvent(event: string, details: MwOptions) {
     if (this._events[event] === undefined) {
       return false
     }
 
-    this._events[event].listeners.forEach(listener => {
-      listener(details)
-    })
+    (this._events[event].listeners as Function[]).forEach(listener => listener(details))
   }
 
-  _isAllowedEvent(eventName) {
+  _isAllowedEvent(eventName: MwEventName) {
     return this._eventNames.includes(eventName)
   }
 
-  _isEmptyArray(arr) {
+  _isEmptyArray(arr: any[]) {
     if (Array.isArray(arr) && arr) {
       return !arr.length
     }
   }
 
-  _isHighlightedWord(word) {
+  _isHighlightedWord(word: string) {
     const highlightedWordsArr = this._options.highlight.words
     return (highlightedWordsArr && !this._isEmptyArray(highlightedWordsArr) && highlightedWordsArr.includes(word))
   }
 
-  _isLastLetterOfWord(index, total) {
+  _isLastLetterOfWord(index: number, total: number) {
     return index === total - 1
   }
 
-  _isLastWordOfSentence(wordStr) {
+  _isLastWordOfSentence(wordStr: string) {
     let output = false
 
     for (let [index, word] of this._words.entries()) {
@@ -130,66 +153,86 @@ class Movinwords {
     return output
   }
 
-  _setCSSVariables(sentence) {
-    sentence.style.setProperty('--mw-word-spacing', this._getWordSpacing(sentence))
+  _setCSSVariables(sentence: HTMLElement) {
+    sentence.style.setProperty('--mw-word-spacing', String(this._getSpacing(sentence)))
+    sentence.style.setProperty('--mw-letter-spacing', String(this._getSpacing(sentence, 'letter')))
     sentence.style.setProperty('--mw-duration', `${this._options.duration}ms`)
     sentence.style.setProperty('--mw-delay', `${this._options.delay}ms`)
-    sentence.style.setProperty('--mw-offset', this._options.offset)
+    sentence.style.setProperty('--mw-offset', String(this._options.offset))
   }
 
-  _getWordIndex(index, words) {
+  _getWordIndex(index: number, words: NodeListOf<HTMLElement>) {
     const realIndex = index + 1
     return this._options.reverseOrder
       ? words.length - realIndex
       : realIndex
   }
 
-  _getWordSpacing(sentence) {
-    if (this._options.wordSpacing) {
-      return this._options.wordSpacing
+  _getSpacing(sentence: HTMLElement, type: 'word' | 'letter' = 'word') {
+    const spacing = type === 'word'
+      ? this._options.wordSpacing
+      : this._options.letterSpacing
+
+    if (spacing) {
+      return spacing
     }
 
-    return parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
+    return type === 'word'
+      ? parseInt(window.getComputedStyle(sentence, null).getPropertyValue('font-size')) * 0.4
+      : 0
   }
 
-  _getWordsArray(sentence) {
-    this._words = sentence.textContent.trim().split(' ')
+  _getWordsArray(sentence: HTMLElement) {
+    if (sentence.textContent) {
+      this._words = sentence.textContent.trim().split(' ')
+    }
+
     return this._words
   }
 
-  _getLettersArray(word) {
-    return [...word.textContent]
+  _getLettersArray(word: HTMLElement) {
+    return word.textContent
+      ? [...word.textContent]
+      : []
   }
 
   _getSentences() {
-    for (const sentence of this._sentences) {
-      sentence.classList.add(this._classNames.base)
-      sentence.classList.add(this._options.transition)
+    if (this._sentences) {
+      for (const sentence of this._sentences) {
+        if (this._options.sentence) {
+          sentence.innerHTML = this._options.sentence
+        }
 
-      if (this._options.reverseTransition) {
-        sentence.classList.add(this._classNames.reverse)
-      }
+        sentence.classList.add(this._classNames.base)
+        sentence.classList.add(this._options.transition)
 
-      if (this._options.animateLetters) {
-        sentence.classList.add(this._classNames.animateLetters)
+        if (this._options.reverseTransition) {
+          sentence.classList.add(this._classNames.reverse)
+        }
+
+        if (this._options.animateLetters) {
+          sentence.classList.add(this._classNames.animateLetters)
+        }
       }
     }
   }
 
   _parseSentences() {
-    for (const sentence of this._sentences) {
-      this._setCSSVariables(sentence)
-      this._createAndAppendWordTags(sentence)
-      this._createAndAppendLetterTags(sentence)
+    if (this._sentences) {
+      for (const sentence of this._sentences) {
+        this._setCSSVariables(sentence)
+        this._createAndAppendWordTags(sentence)
+        this._createAndAppendLetterTags(sentence)
 
-      setTimeout(() => {
-        sentence.classList.add(this._visible)
-        delete sentence.dataset[this._classNames.base]
-      }, 100)
+        setTimeout(() => {
+          sentence.classList.add(this._visible)
+          delete sentence.dataset[this._classNames.base]
+        }, 100)
+      }
     }
   }
 
-  _appendTags(el, tagsArr) {
+  _appendTags(el: HTMLElement, tagsArr: HTMLElement[]) {
     el.innerHTML = ''
 
     for (const tag of tagsArr) {
@@ -197,25 +240,28 @@ class Movinwords {
     }
   }
 
-  _createTag(options) {
-    const tagEl = document.createElement(options.tag)
+  _createTag(options: MwWordTag) {
+    const tagEl: HTMLElement = document.createElement(options.tag)
     tagEl.className = options.className
     tagEl.textContent = options.text
 
     for (const varName in options.vars) {
-      tagEl.style.setProperty(`--mw-${varName}`, options.vars[varName])
+      if (varName) {
+        const vars = options.vars[varName] ?? null
+        tagEl.style.setProperty(`--mw-${varName}`, String(vars))
+      }
     }
 
     return tagEl
   }
 
-  _createAndAppendWordTags(sentence) {
+  _createAndAppendWordTags(sentence: HTMLElement) {
     const wordTagsArr = this._createWordTags(sentence)
     this._appendTags(sentence, wordTagsArr)
   }
 
-  _createAndAppendLetterTags(sentence) {
-    const words = sentence.querySelectorAll(`.${this._classNames.word}`)
+  _createAndAppendLetterTags(sentence: HTMLElement) {
+    const words: NodeListOf<HTMLElement> = sentence.querySelectorAll(`.${this._classNames.word}`)
 
     words.forEach((word, index) => {
       const letterTagsArr = this._createLetterTags(word, this._getWordIndex(index, words))
@@ -223,8 +269,8 @@ class Movinwords {
     })
   }
 
-  _createWordTags(sentence) {
-    const wordTagsArr = []
+  _createWordTags(sentence: HTMLElement) {
+    const wordTagsArr: HTMLElement[] = []
     const words = this._getWordsArray(sentence)
 
     for (const word of words) {
@@ -239,25 +285,31 @@ class Movinwords {
       wordTagsArr.push(this._createTag({
         tag,
         className,
-        text: word
+        text: word,
+        vars: {}
       }))
     }
 
     return wordTagsArr
   }
 
-  _createLetterElement(letter, letters, index, wordIndex) {
-    const payload = {
+  _createLetterElement(letter: string, letters: string[], index: number, wordIndex: number) {
+    const payload: MwWordTag = {
       tag: 'span',
       className: `${this._classNames.letter}`,
       text: letter,
       vars: {
+        t: undefined,
         w: wordIndex,
         l: index
       }
     }
 
-    if (this._options.animateLetters) {
+    if (
+      this._options.animateLetters &&
+      typeof payload.vars === 'object' &&
+      !Array.isArray(payload.vars)
+    ) {
       payload.vars.t = letters.length
       payload.vars.l = this.currentLetterIndex++
     }
@@ -265,7 +317,7 @@ class Movinwords {
     return this._createTag(payload)
   }
 
-  _addLetterEventListeners(word, letterEl) {
+  _addLetterEventListeners(word: HTMLElement, letterEl: HTMLElement) {
     const payload = {
       ...this._options,
       word: {
@@ -274,24 +326,24 @@ class Movinwords {
       }
     }
 
-    letterEl.addEventListener('transitionstart', (event) => {
+    letterEl.addEventListener('transitionstart', (event: TransitionEvent) => {
       if (event.propertyName === this._options.eventsTransitionProperty) {
         this._emitEvent(`wordTransitionStart`, payload)
       }
     })
 
-    letterEl.addEventListener('transitionend', (event) => {
+    letterEl.addEventListener('transitionend', (event: TransitionEvent) => {
       if (event.propertyName === this._options.eventsTransitionProperty) {
         this._emitEvent(`wordTransitionEnd`, payload)
 
-        if (this._isLastWordOfSentence(word.textContent)) {
+        if (word.textContent && this._isLastWordOfSentence(word.textContent)) {
           this._emitEvent('end', this._options)
         }
       }
     })
   }
 
-  _createLetterTags(word, wordIndex) {
+  _createLetterTags(word: HTMLElement, wordIndex: number) {
     const letterTagsArr = []
     const letters = this._getLettersArray(word)
 
@@ -329,7 +381,7 @@ class Movinwords {
         })
       }, this._options.intersectionOptions)
 
-      this._sentences.forEach((el) => {
+      this._sentences?.forEach((el) => {
         if (el) {
           observer.observe(el)
         }
@@ -348,4 +400,9 @@ class Movinwords {
   }
 }
 
+if (typeof window !== 'undefined') {
+  (window as any).Movinwords = Movinwords
+}
+
 export default Movinwords
+

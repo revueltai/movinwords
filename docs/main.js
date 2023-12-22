@@ -2,13 +2,14 @@ let opts = {}
 const activeClass = 'active'
 const exampleOptions = {
   el: '.word',
+  sentence: '',
   autostart: false,
   intersectionStart: false,
   reverseTransition: true,
   reverseOrder: true,
   animateLetters: true,
   timers: [0, 100, 200, 500, 800, 1000, 2000],
-  spacings: [10, 20, 50, 100],
+  spacings: [0, 10, 20, 50, 100],
   transitions: [
     'slideInTop',
     'slideInBottom',
@@ -51,6 +52,16 @@ const _createLabel = (options) => {
   labelEl.innerText = options.label
 
   return labelEl
+}
+
+const _createInputText = (options) => {
+  const inputEl = document.createElement('input')
+  inputEl.type = 'search'
+  inputEl.placeholder = options.placeholder
+  inputEl.id = options.id || ''
+  inputEl.dataset.type = options.dataType
+
+  return inputEl
 }
 
 const _createInputCheckbox = (options) => {
@@ -111,8 +122,16 @@ const _createContainer = (options) => {
 }
 
 const _createOptionsUI = (options) => {
+  const texts = document.getElementById('texts')
   const dropdowns = document.getElementById('dropdowns')
   const checkboxes = document.getElementById('checkboxes')
+
+  const sentenceInput = _createInputText({
+    id: 'ui-input-sentence',
+    className: 'ui-input-sentence',
+    dataType: 'sentence',
+    placeholder: 'Enter sentence to inject'
+  })
 
   const durationSelect = _createSelect({
     id: 'ui-select-duration',
@@ -121,6 +140,7 @@ const _createOptionsUI = (options) => {
     selected: 500,
     dataType: 'duration'
   })
+
   const delaySelect = _createSelect({
     id: 'ui-select-delay',
     className: 'ui-select-delay',
@@ -128,42 +148,58 @@ const _createOptionsUI = (options) => {
     selected: 500,
     dataType: 'delay'
   })
+
   const transitionsSelect = _createSelect({
     id: 'ui-select-transitions',
     className: 'ui-select-transitions',
     values: options.transitions,
     dataType: 'transition'
   })
+
   const offsetSelect = _createSelect({
     id: 'ui-select-offset',
     className: 'ui-select-offset',
     values: options.spacings,
+    selected: 10,
     dataType: 'offset'
   })
+
   const wordSpacingSelect = _createSelect({
     id: 'ui-select-word-spacing',
     className: 'ui-select-word-spacing',
     values: options.spacings,
+    selected: 10,
     dataType: 'wordSpacing'
   })
+
+  const letterSpacingSelect = _createSelect({
+    id: 'ui-select-letter-spacing',
+    className: 'ui-select-letter-spacing',
+    values: options.spacings,
+    dataType: 'letterSpacing'
+  })
+
   const reverseTransitionCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-reverse-transition',
     className: 'ui-checkbox-reverse-transition',
     label: 'Reverse transitions',
     dataType: 'reverseTransition'
   })
+
   const reverseOrderCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-reverse-direction',
     className: 'ui-checkbox-reverse-direction',
     label: 'Reverse Order',
     dataType: 'reverseOrder'
   })
+
   const highlightCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-highlight',
     className: 'ui-checkbox-highlight',
     label: 'Highlight words',
     dataType: 'highlight'
   })
+
   const eventsCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-events',
     className: 'ui-checkbox-events',
@@ -171,6 +207,7 @@ const _createOptionsUI = (options) => {
     dataType: 'events',
     checked: true
   })
+
   const intersectionObserverCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-intersection',
     className: 'ui-checkbox-intersection',
@@ -178,6 +215,7 @@ const _createOptionsUI = (options) => {
     dataType: 'intersectionOptions',
     checked: true
   })
+
   const animateLettersCheckbox = _createInputCheckbox({
     id: 'ui-checkbox-animate-letters',
     className: 'ui-checkbox-animate-letters',
@@ -185,61 +223,88 @@ const _createOptionsUI = (options) => {
     dataType: 'animateLetters',
     checked: false
   })
+
+  // Containers
+  const sentenceContainer = _createContainer({
+    el: sentenceInput,
+    id: 'sentence',
+    label: 'Dynamic Sentence',
+    for: 'ui-input-sentence'
+  })
+
   const durationContainer = _createContainer({
     el: durationSelect,
     id: 'duration',
     label: 'Duration (ms)',
     for: 'ui-select-duration'
   })
+
   const delayContainer = _createContainer({
     el: delaySelect,
     id: 'delay',
     label: 'Delay (ms)',
     for: 'ui-select-delay'
   })
+
   const transitionsContainer = _createContainer({
     el: transitionsSelect,
     id: 'transitions',
     label: 'Transitions',
     for: 'ui-select-transitions'
   })
+
   const wordSpacingContainer = _createContainer({
     el: wordSpacingSelect,
     id: 'wordSpacingSelect',
     label: 'Word Spacing',
     for: 'ui-select-word-spacing'
   })
+
+  const letterSpacingContainer = _createContainer({
+    el: letterSpacingSelect,
+    id: 'letterSpacingSelect',
+    label: 'Letter Spacing',
+    for: 'ui-select-letter-spacing'
+  })
+
   const offsetContainer = _createContainer({
     el: offsetSelect,
     id: 'offset',
     label: 'Offset',
     for: 'ui-select-offset'
   })
+
   const reverseTransitionContainer = _createContainer({
     el: reverseTransitionCheckbox
   })
+
   const reverseOrderContainer = _createContainer({
     el: reverseOrderCheckbox
   })
+
   const animateLettersContainer = _createContainer({
     el: animateLettersCheckbox
   })
   const highlightContainer = _createContainer({
     el: highlightCheckbox
   })
+
   const eventsContainer = _createContainer({
     el: eventsCheckbox
   })
+
   const intersectionObserverContainer = _createContainer({
     el: intersectionObserverCheckbox
   })
 
+  texts.appendChild(sentenceContainer)
 
   dropdowns.appendChild(durationContainer)
   dropdowns.appendChild(delayContainer)
   dropdowns.appendChild(transitionsContainer)
   dropdowns.appendChild(offsetContainer)
   dropdowns.appendChild(wordSpacingContainer)
+  dropdowns.appendChild(letterSpacingContainer)
 
   checkboxes.appendChild(reverseTransitionContainer)
   checkboxes.appendChild(reverseOrderContainer)
@@ -252,6 +317,7 @@ const _createOptionsUI = (options) => {
 const _prepareSentence = () => {
   const elWord = document.getElementById('word')
   const spanEl = document.createElement('span')
+
   spanEl.className = 'word'
   spanEl.innerText = 'Hello world! This is Movinwords! 👋'
 
@@ -291,14 +357,17 @@ mw.start();
 }
 
 const _updateOptionsPayload = () => {
-  const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing']
+  const textProps = ['sentence']
+  const dropdownProps = ['duration', 'delay', 'transition', 'offset', 'wordSpacing', 'letterSpacing']
   const checkboxProps = ['reverseTransition', 'reverseOrder', 'highlight', 'events', 'intersectionOptions', 'animateLetters']
   const optionsIds = [
+    'ui-input-sentence',
     'ui-select-delay',
     'ui-select-duration',
     'ui-select-transitions',
     'ui-select-offset',
     'ui-select-word-spacing',
+    'ui-select-letter-spacing',
     'ui-select-transitions',
     'ui-checkbox-reverse-transition',
     'ui-checkbox-reverse-direction',
@@ -314,9 +383,15 @@ const _updateOptionsPayload = () => {
     intersectionStart: exampleOptions.intersectionStart
   }
 
+  console.log(document.getElementById('sentence'));
+
   for (const id of optionsIds) {
     const el = document.getElementById(id)
     const prop = el.dataset.type
+
+    if (textProps.includes(prop)) {
+      payload[prop] = el.value
+    }
 
     if (dropdownProps.includes(prop)) {
       payload[prop] = el.value
@@ -341,8 +416,12 @@ const _initExample = () => {
   _prepareSentence()
   _appendCode()
 
-  const mw = new Movinwords(opts)
-  mw.start()
+  try {
+    const mw = new Movinwords(opts)
+    mw.start()
+  } catch (error) {
+    throw error
+  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

@@ -5,17 +5,25 @@ A plugin to animate sentences, words and letters.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
+## Playground
+
+Check out the playground [here](https://revueltai.github.io/movinwords/).
+
 ## Installation
 
 ```sh
-npm install movinwords
+npm install movinwords # yarn movinwords
 ```
 
-## Usage
+## Basic Usage
 
 #### HTML
 ```html
+<!-- Get Movinwords to animate a given sentence -->
 <h1 class="my-sentence">I am an animated sentence.</h1>
+
+<!-- Or you can provide the sentence dynamically -->
+<h1 class="my-injected-sentence"></h1>
 ```
 
 #### JS & CSS
@@ -27,6 +35,11 @@ import 'movinwords/movinwords.css'; // Before v.1.0.8 movinwords/dist/movinwords
 
 const sentence = new Movinwords({
   el: '.my-sentence'
+});
+
+const injectedSentence = new Movinwords({
+  el: '.my-injected-sentence',
+  sentence: 'Hello world, I am a sentence!'
 });
 ```
 
@@ -43,6 +56,11 @@ const sentence = new Movinwords({
     const sentence = new Movinwords({
       el: '.my-sentence'
     });
+
+    const injectedSentence = new Movinwords({
+      el: '.my-injected-sentence',
+      sentence: 'Hello world, I am a sentence!'
+    });
   })();
 </script>
 ```
@@ -51,6 +69,7 @@ const sentence = new Movinwords({
 | Option                  | Type      | Default                | Description                                                                                                                                                                                                                                                                                        |
 | ----------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `el`                    | `string`  | `null`             | **Required:** Sentence container element.
+| `sentence`              | `string`  | `''`               | Sentence you want to inject dynamically.
 | `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
 | `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
 | `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Offset](#offset)).
@@ -61,6 +80,7 @@ const sentence = new Movinwords({
 | `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
 | `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
+| `letterSpacing`         | `number`  | `null`             | Space gap between each letter. ([See Letter Spacing](#letter-spacing))
 | `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
 | `events`                | `object`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
 | `eventsTransitionProperty`                | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
@@ -199,7 +219,16 @@ By default Movinwords will calculate the space between words based on the senten
 ```js
 new Movinwords({
   el: '.my-sentence',
-  wordSpacing: 50 // Will force a 50px space between each word.
+  wordSpacing: 50 // Will set a 50px space between each word.
+})
+```
+
+## Letter Spacing
+You can provide a space between each letter:
+```js
+new Movinwords({
+  el: '.my-sentence',
+  letterSpacing: 50 // Will set a 50px space between each letter.
 })
 ```
 
@@ -265,6 +294,3 @@ new Movinwords({
   animateLetters: true // Each letter will slide in from the bottom
 })
 ```
-
-## Sandbox
-Check out the sandbox [here](https://revueltai.github.io/movinwords/).
