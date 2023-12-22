@@ -12,14 +12,8 @@ import colors from 'picocolors'
 import { visualizer } from 'rollup-plugin-visualizer'
 import type { PluginOption } from 'vite'
 import { execSync } from 'child_process'
-import {
-  copyFileSync,
-  readFileSync,
-  writeFileSync
-} from 'fs'
 
 const entry = path.resolve(__dirname, 'src/movinwords.ts')
-const outDirPath = `${__dirname}/dist/`
 const name = 'MovinWords'
 const minify = 'terser'
 const terserOptions = {
@@ -48,71 +42,10 @@ function compileScss(outputDir: string): PluginOption {
   }
 }
 
-/**
- * Vite plugin to create a production version of package.json.
- *
- * @returns {PluginOption} A Vite plugin object with a name and a closeBundle hook.
- */
-function copyPackageJson(): PluginOption {
-  return {
-    name: 'copy-package-json',
-    closeBundle() {
-      try {
-        console.log('Copying package.json...')
-        const sourceFile = readFileSync(`${__dirname}/package.json`)
-          .toString('utf-8')
-
-        const sourceJson = JSON.parse(sourceFile)
-
-        const unnededProps = ['type', 'types', 'source', 'files', 'scripts', 'devDependencies']
-        for (const prop of unnededProps) {
-          delete sourceJson[prop]
-        }
-
-        writeFileSync(
-          `${outDirPath}package.json`,
-          Buffer.from(JSON.stringify(sourceJson, null, 2), 'utf-8')
-        )
-      } catch (error) {
-        console.error('Error copying package.json', error)
-      }
-
-    }
-  }
-}
-
-/**
- * Vite plugin to create a production version of other bundle files.
- *
- * @returns {PluginOption} A Vite plugin object with a name and a closeBundle hook.
- */
-function copyPackageFiles(): PluginOption {
-  return {
-    name: 'copy-package-files',
-    closeBundle() {
-      try {
-        const filenames = ['README.md', 'LICENSE']
-
-        for (const filename of filenames) {
-          copyFileSync(
-            `${__dirname}/${filename}`,
-            `${outDirPath}${filename}`,
-          )
-        }
-      } catch (error) {
-        console.error('Error copying package files')
-
-      }
-    }
-  }
-}
-
 // Configuration for building the package
 const packageBuildConfig = defineConfig({
   plugins: [
     compileScss('dist/'),
-    copyPackageJson(),
-    copyPackageFiles(),
     visualizer() as PluginOption,
     progress({
       format: `Building ${colors.green('[:bar]')} :percent :eta`,
@@ -137,7 +70,7 @@ const packageBuildConfig = defineConfig({
             break
 
           case 'cjs':
-            filename += '.js'
+            filename += '.cjs'
             break
 
           case 'iife':
