@@ -111,6 +111,51 @@ describe('Movinwords', () => {
     })
   })
 
+  describe('Pause', () => {
+    beforeEach(() => {
+      const dom = new JSDOM(`<!doctype html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+          </head>
+          <body>
+            <div class="my-sentence">Hello lovely world!</div>
+          </body>
+        </html>`)
+
+      global.window = dom.window
+      global.document = dom.window.document
+    })
+
+    afterEach(() => {
+      global.window = undefined
+      global.document = undefined
+    })
+
+    it('should pause the animation when the pause method is called', () => {
+      const mw = new Movinwords({
+        el: '.my-sentence',
+      })
+
+      expect(mw._paused).toBe(false)
+      mw.pause()
+      expect(mw._paused).toBe(true)
+    })
+
+    it('should resume the animation when the resume method is called', () => {
+      const mw = new Movinwords({
+        el: '.my-sentence',
+      })
+
+      expect(mw._paused).toBe(false)
+      mw.pause()
+      expect(mw._paused).toBe(true)
+
+      mw.resume()
+      expect(mw._paused).toBe(false)
+    })
+  })
+
   describe('Words', () => {
     beforeEach(() => {
       const dom = new JSDOM(`<!doctype html>

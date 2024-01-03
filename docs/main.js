@@ -1,4 +1,6 @@
 let opts = {}
+let mw = null
+let paused = false
 const activeClass = 'active'
 const exampleOptions = {
   el: '.word',
@@ -224,6 +226,14 @@ const _createOptionsUI = (options) => {
     checked: false
   })
 
+  const pauseCheckbox = _createInputCheckbox({
+    id: 'ui-checkbox-pause',
+    className: 'ui-checkbox-pause',
+    label: 'Show Pause',
+    dataType: 'pause',
+    checked: false
+  })
+
   // Containers
   const sentenceContainer = _createContainer({
     el: sentenceInput,
@@ -285,6 +295,7 @@ const _createOptionsUI = (options) => {
   const animateLettersContainer = _createContainer({
     el: animateLettersCheckbox
   })
+
   const highlightContainer = _createContainer({
     el: highlightCheckbox
   })
@@ -295,6 +306,10 @@ const _createOptionsUI = (options) => {
 
   const intersectionObserverContainer = _createContainer({
     el: intersectionObserverCheckbox
+  })
+
+  const pauseContainer = _createContainer({
+    el: pauseCheckbox
   })
 
   texts.appendChild(sentenceContainer)
@@ -312,6 +327,7 @@ const _createOptionsUI = (options) => {
   checkboxes.appendChild(eventsContainer)
   checkboxes.appendChild(intersectionObserverContainer)
   checkboxes.appendChild(animateLettersContainer)
+  checkboxes.appendChild(pauseContainer)
 }
 
 const _prepareSentence = () => {
@@ -327,16 +343,30 @@ const _prepareSentence = () => {
 
 const _prepareOptionsEvents = () => {
   const codeBtn = document.getElementById('btn-code')
-  const optionsBtn = document.getElementById('ui-button-cta')
+  const btnRun = document.getElementById('ui-button-cta')
+  const btnPause = document.getElementById('ui-button-pause')
 
   codeBtn.addEventListener('click', (event) => {
     event.target.classList.toggle(activeClass)
     document.getElementById('pre').classList.toggle(activeClass)
   })
 
-  optionsBtn.addEventListener('click', (event) => {
+  btnRun.addEventListener('click', (event) => {
     event.preventDefault()
     _initExample()
+  })
+
+  btnPause.addEventListener('click', (event) => {
+    event.preventDefault()
+    if (paused) {
+      mw.resume()
+      btnPause.innerText = 'Pause'
+      paused = false
+    } else {
+      mw.pause()
+      btnPause.innerText = 'Resume'
+      paused = true
+    }
   })
 }
 
@@ -383,7 +413,9 @@ const _updateOptionsPayload = () => {
     intersectionStart: exampleOptions.intersectionStart
   }
 
-  console.log(document.getElementById('sentence'));
+  document.getElementById('ui-checkbox-pause').addEventListener('click', () => {
+    document.getElementById('ui-button-pause').classList.toggle('visible')
+  })
 
   for (const id of optionsIds) {
     const el = document.getElementById(id)
@@ -417,7 +449,7 @@ const _initExample = () => {
   _appendCode()
 
   try {
-    const mw = new Movinwords(opts)
+    mw = new Movinwords(opts)
     mw.start()
   } catch (error) {
     throw error

@@ -34,6 +34,21 @@ header {
   padding: 32px;
 }
 
+a {
+  color: #0095D0;
+}
+
+footer {
+  opacity: .3;
+  margin-top: 64px;
+  text-align: center;
+  transition: opacity 500ms ease-in-out;
+}
+
+footer:hover {
+  opacity: 1;
+}
+
 main {
   position: relative;
   padding: 0 32px 32px;
@@ -132,11 +147,16 @@ pre::-webkit-scrollbar-thumb:horizontal {
   background-color: #045879;
 }
 
+.btn-secondary {
+  background-color: #001cd0;
+}
+
 .btn-cta {
   position: absolute;
   right: 20px;
   bottom: 20px;
   min-width: 100px;
+  text-align: right;
 }
 
 /*
@@ -276,4 +296,12 @@ Example wrapper
 .ui-example-container__code.active {
   visibility: visible;
   opacity: 1;
+}
+
+#ui-button-pause {
+  display: none;
+}
+
+#ui-button-pause.visible {
+  display: inline-block;
 }

@@ -8,8 +8,11 @@ class Movinwords {
   constructor(opts = {}) {
     __publicField(this, "_sentences");
     __publicField(this, "_words");
-    __publicField(this, "currentLetterIndex");
+    __publicField(this, "_pausableProps");
+    __publicField(this, "_pausedProps");
+    __publicField(this, "_currentLetterIndex");
     __publicField(this, "_started");
+    __publicField(this, "_paused");
     __publicField(this, "_visible");
     __publicField(this, "_events");
     __publicField(this, "_eventNames");
@@ -17,8 +20,11 @@ class Movinwords {
     __publicField(this, "_options");
     this._sentences = null;
     this._words = [];
-    this.currentLetterIndex = 0;
+    this._pausableProps = ["opacity", "transform"];
+    this._pausedProps = {};
+    this._currentLetterIndex = 0;
     this._started = false;
+    this._paused = false;
     this._visible = "--v";
     this._events = {};
     this._eventNames = [
@@ -243,7 +249,7 @@ class Movinwords {
     };
     if (this._options.animateLetters && typeof payload.vars === "object" && !Array.isArray(payload.vars)) {
       payload.vars.t = letters.length;
-      payload.vars.l = this.currentLetterIndex++;
+      payload.vars.l = this._currentLetterIndex++;
     }
     return this._createTag(payload);
   }
@@ -301,6 +307,33 @@ class Movinwords {
           observer.observe(el);
         }
       });
+    }
+  }
+  pause() {
+    if (!this._paused && this._sentences) {
+      const elements = document.querySelectorAll(`.${this._classNames.letter}`);
+      elements.forEach((el, index) => {
+        const htmlEl = el;
+        this._pausedProps[index] = {};
+        const computedStyle = window.getComputedStyle(el);
+        for (const prop of this._pausableProps) {
+          this._pausedProps[index][prop] = computedStyle[prop];
+          htmlEl.style[prop] = computedStyle[prop];
+        }
+      });
+      this._paused = true;
+    }
+  }
+  resume() {
+    if (this._paused && this._sentences) {
+      const elements = document.querySelectorAll(`.${this._classNames.letter}`);
+      elements.forEach((el) => {
+        const htmlEl = el;
+        for (const prop of this._pausableProps) {
+          htmlEl.style[prop] = "";
+        }
+      });
+      this._paused = false;
     }
   }
   start() {

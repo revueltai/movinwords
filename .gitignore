@@ -22,4 +22,5 @@ node_modules
 *.sw?
 coverage/
 playgrounds/
+instructions.md
 stats.html

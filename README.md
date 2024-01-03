@@ -12,7 +12,11 @@ Check out the playground [here](https://revueltai.github.io/movinwords/).
 ## Installation
 
 ```sh
-npm install movinwords # yarn movinwords
+npm install movinwords
+```
+or
+```sh
+yarn add movinwords
 ```
 
 ## Basic Usage
@@ -90,6 +94,8 @@ const injectedSentence = new Movinwords({
 | Method | Description |
 |--|--|
 | `start` | Starts the animation ([See Autostart](#autostart)).|
+| `pause` | Starts the animation ([See Pause](#pause)).|
+| `resume` | Resumes the animation ([See Resume](#resume)).|
 
 
 ## Events
@@ -153,6 +159,45 @@ const mw = new Movinwords({
 setTimeout(() => {
   mw.start()
 }, 2000)
+```
+
+## Pause
+To pause an animation you can call the `pause()` method:
+```js
+const mw = new Movinwords({
+  el: '.my-sentence',
+  autostart: false
+})
+
+// Triggers start.
+mw.start()
+
+setTimeout(() => {
+  // Triggers a pause after 2 seconds.
+  mw.pause()
+}, 2000)
+```
+
+## Resume
+To resume (unpause) the animation you need to call the `resume()` method:
+```js
+const mw = new Movinwords({
+  el: '.my-sentence',
+  autostart: false
+})
+
+// Triggers start.
+mw.start()
+
+setTimeout(() => {
+  // Triggers a pause after 2 seconds.
+  mw.pause()
+}, 2000)
+
+setTimeout(() => {
+  // Resumes the animation after 4 seconds.
+  mw.resume()
+}, 4000)
 ```
 
 ## Transitions

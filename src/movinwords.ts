@@ -4,13 +4,17 @@ import type {
   MwEventListeners,
   MwOptions,
   MwWordTag,
+  MwCSSProperties,
 } from './types/movinwords'
 
 class Movinwords {
   private _sentences: NodeListOf<HTMLElement> | null
   private _words: string[]
-  private currentLetterIndex: number
+  private _pausableProps: MwCSSProperties[]
+  private _pausedProps: { [key: string]: any }
+  private _currentLetterIndex: number
   private _started: boolean
+  private _paused: boolean
   private _visible: string
   private _events: MwEventListeners
   private _eventNames: MwEventName[]
@@ -20,8 +24,11 @@ class Movinwords {
   constructor(opts: MwOptions | {} = {}) {
     this._sentences = null
     this._words = []
-    this.currentLetterIndex = 0
+    this._pausableProps = ['opacity', 'transform']
+    this._pausedProps = {}
+    this._currentLetterIndex = 0
     this._started = false
+    this._paused = false
     this._visible = '--v'
     this._events = {}
     this._eventNames = [
@@ -311,7 +318,7 @@ class Movinwords {
       !Array.isArray(payload.vars)
     ) {
       payload.vars.t = letters.length
-      payload.vars.l = this.currentLetterIndex++
+      payload.vars.l = this._currentLetterIndex++
     }
 
     return this._createTag(payload)
@@ -386,6 +393,42 @@ class Movinwords {
           observer.observe(el)
         }
       })
+    }
+  }
+
+  pause() {
+    if (!this._paused && this._sentences) {
+      const elements = document.querySelectorAll(`.${this._classNames.letter}`)
+
+      elements.forEach((el, index) => {
+        const htmlEl = el as HTMLElement
+
+        this._pausedProps[index] = {}
+        const computedStyle = window.getComputedStyle(el)
+
+        for (const prop of this._pausableProps) {
+          this._pausedProps[index][prop] = computedStyle[prop]
+          htmlEl.style[prop] = computedStyle[prop]
+        }
+      })
+
+      this._paused = true
+    }
+  }
+
+  resume() {
+    if (this._paused && this._sentences) {
+      const elements = document.querySelectorAll(`.${this._classNames.letter}`)
+
+      elements.forEach((el) => {
+        const htmlEl = el as HTMLElement
+
+        for (const prop of this._pausableProps) {
+          htmlEl.style[prop] = ''
+        }
+      })
+
+      this._paused = false
     }
   }
 

@@ -11,6 +11,7 @@
   <meta property="og:description" content="Movinwords is plugin to animate sentences and words in Javascript.">
   <meta property="og:image" content="https://a.storyblok.com/f/99692/600x315/e650aa1a75/movinwords.jpg">
 
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="movinwords.css">
   <script src="movinwords.min.js"></script>
@@ -44,7 +45,6 @@
     </div>
 
     <div id="ui-example-container" class="ui-example-container">
-
       <div class="ui-example-container__heading">
         <span id="btn-code" class="ui-example-container__btn-code"></span>
       </div>
@@ -52,13 +52,20 @@
       <div class="ui-example-container__example">
         <div id="word"></div>
         <pre id="pre" class="ui-example-container__code">
-            <code id="code" class="javascript"></code>
-          </pre>
+          <code id="code" class="javascript"></code>
+        </pre>
 
-        <button id="ui-button-cta" class="btn btn-cta">Run</button>
+        <div class="btn-cta">
+          <button id="ui-button-pause" class="btn btn-secondary">Pause</button>
+          <button id="ui-button-cta" class="btn">Run</button>
+        </div>
       </div>
     </div>
   </main>
+
+  <footer>
+    <p>Design and Developed by <a href="https://www.iamnacho.com/" target="_blank">iamnacho</a></p>
+  </footer>
 </body>
 
 </html>

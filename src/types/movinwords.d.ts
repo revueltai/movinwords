@@ -1,3 +1,5 @@
+export type MwCSSProperties = 'transform' | 'opacity'
+
 export interface MwIntersectionObserverProperties {
   root?: Element | null
   rootMargin?: string
@@ -34,7 +36,7 @@ export interface MwOptions {
   animateLetters: boolean
   reverseTransition: boolean
   reverseOrder: boolean
-  transition: string
+  transition: 'fadeIn' | 'slideInTop' | 'slideInBottom' | 'slideInLeft' | 'slideInRight' | 'revealInTop' | 'revealInBottom'
   wordSpacing: number | null
   letterSpacing: number | null
   highlight: MwHighlightOptions
