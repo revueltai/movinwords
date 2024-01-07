@@ -8,7 +8,6 @@ class Movinwords {
   constructor(opts = {}) {
     __publicField(this, "_sentences");
     __publicField(this, "_words");
-    __publicField(this, "_pausableProps");
     __publicField(this, "_pausedProps");
     __publicField(this, "_currentLetterIndex");
     __publicField(this, "_started");
@@ -20,7 +19,6 @@ class Movinwords {
     __publicField(this, "_options");
     this._sentences = null;
     this._words = [];
-    this._pausableProps = ["opacity", "transform"];
     this._pausedProps = {};
     this._currentLetterIndex = 0;
     this._started = false;
@@ -53,6 +51,7 @@ class Movinwords {
       reverseTransition: false,
       reverseOrder: false,
       transition: "fadeIn",
+      pausableProps: ["opacity", "transform"],
       wordSpacing: 0,
       letterSpacing: 0,
       highlight: {
@@ -316,7 +315,7 @@ class Movinwords {
         const htmlEl = el;
         this._pausedProps[index] = {};
         const computedStyle = window.getComputedStyle(el);
-        for (const prop of this._pausableProps) {
+        for (const prop of this._options.pausableProps) {
           this._pausedProps[index][prop] = computedStyle[prop];
           htmlEl.style[prop] = computedStyle[prop];
         }
@@ -329,7 +328,7 @@ class Movinwords {
       const elements = document.querySelectorAll(`.${this._classNames.letter}`);
       elements.forEach((el) => {
         const htmlEl = el;
-        for (const prop of this._pausableProps) {
+        for (const prop of this._options.pausableProps) {
           htmlEl.style[prop] = "";
         }
       });

@@ -4,13 +4,11 @@ import type {
   MwEventListeners,
   MwOptions,
   MwWordTag,
-  MwCSSProperties,
 } from './types/movinwords'
 
 class Movinwords {
   private _sentences: NodeListOf<HTMLElement> | null
   private _words: string[]
-  private _pausableProps: MwCSSProperties[]
   private _pausedProps: { [key: string]: any }
   private _currentLetterIndex: number
   private _started: boolean
@@ -24,7 +22,6 @@ class Movinwords {
   constructor(opts: MwOptions | {} = {}) {
     this._sentences = null
     this._words = []
-    this._pausableProps = ['opacity', 'transform']
     this._pausedProps = {}
     this._currentLetterIndex = 0
     this._started = false
@@ -59,6 +56,7 @@ class Movinwords {
       reverseTransition: false,
       reverseOrder: false,
       transition: 'fadeIn',
+      pausableProps: ['opacity', 'transform'],
       wordSpacing: 0,
       letterSpacing: 0,
       highlight: {
@@ -406,7 +404,7 @@ class Movinwords {
         this._pausedProps[index] = {}
         const computedStyle = window.getComputedStyle(el)
 
-        for (const prop of this._pausableProps) {
+        for (const prop of this._options.pausableProps) {
           this._pausedProps[index][prop] = computedStyle[prop]
           htmlEl.style[prop] = computedStyle[prop]
         }
@@ -423,7 +421,7 @@ class Movinwords {
       elements.forEach((el) => {
         const htmlEl = el as HTMLElement
 
-        for (const prop of this._pausableProps) {
+        for (const prop of this._options.pausableProps) {
           htmlEl.style[prop] = ''
         }
       })

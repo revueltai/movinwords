@@ -1,4 +1,4 @@
-export type MwCSSProperties = 'transform' | 'opacity'
+type MwCSSProperties = 'transform' | 'opacity'
 
 export interface MwIntersectionObserverProperties {
   root?: Element | null
@@ -9,6 +9,8 @@ export interface MwIntersectionObserverProperties {
 export interface MwEventListeners {
   [key: string]: Record<string, Function> | { listeners: Function[] }
 }
+
+export type MwTransition = 'fadeIn' | 'slideInTop' | 'slideInBottom' | 'slideInLeft' | 'slideInRight' | 'revealInTop' | 'revealInBottom'
 
 export type MwEventName = 'start' | 'end' | 'wordTransitionStart' | 'wordTransitionEnd' | 'letterTransitionStart' | 'letterTransitionEnd'
 
@@ -36,7 +38,8 @@ export interface MwOptions {
   animateLetters: boolean
   reverseTransition: boolean
   reverseOrder: boolean
-  transition: 'fadeIn' | 'slideInTop' | 'slideInBottom' | 'slideInLeft' | 'slideInRight' | 'revealInTop' | 'revealInBottom'
+  pausableProps: MwCSSProperties[]
+  transition: MwTransition
   wordSpacing: number | null
   letterSpacing: number | null
   highlight: MwHighlightOptions

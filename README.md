@@ -26,7 +26,7 @@ yarn add movinwords
 <!-- Get Movinwords to animate a given sentence -->
 <h1 class="my-sentence">I am an animated sentence.</h1>
 
-<!-- Or you can provide the sentence dynamically -->
+<!-- Or you can provide the sentence dynamically (see below) -->
 <h1 class="my-injected-sentence"></h1>
 ```
 
@@ -35,7 +35,7 @@ yarn add movinwords
 ##### With a bundler
 ```js
 import Movinwords from 'movinwords';
-import 'movinwords/movinwords.css'; // Before v.1.0.8 movinwords/dist/movinwords.css
+import 'movinwords/movinwords.css';
 
 const sentence = new Movinwords({
   el: '.my-sentence'
@@ -49,11 +49,8 @@ const injectedSentence = new Movinwords({
 
 ##### From a CDN
 ```html
-<!-- Before v.1.0.8 https://unpkg.com/movinwords@1.0.7/dist/movinwords.css -->
-<link rel="stylesheet" href="https://unpkg.com/movinwords/movinwords.css">
-
-<!-- Before v.1.0.8 https://unpkg.com/movinwords@1.0.7/dist/movinwords.min.js -->
-<script src="https://unpkg.com/movinwords/movinwords.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/movinwords/dist/movinwords.css">
+<script src="https://unpkg.com/movinwords/dist/movinwords.min.js"></script>
 
 <script>
   (function () {
@@ -81,22 +78,22 @@ const injectedSentence = new Movinwords({
 | `reverseOrder`          | `boolean` | `false`            | Reverses the word's appearance order ([See Reverse Order](#reverse-order)).
 | `animateLetters`        | `boolean` | `false`            | Animates the individual letters of a sentence ([See Animate Letters](#animate-letters)).
 | `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
-| `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
-| `transition`            | `string`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
+| `transition`            | `MwTransition`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
+| `pausableProps`         | `MwCSSProperties[]`  | `['opacity','transform']` | Name of the css properties to be paused when pause is triggered ([See Pause](#pause)).
 | `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
 | `letterSpacing`         | `number`  | `null`             | Space gap between each letter. ([See Letter Spacing](#letter-spacing))
-| `highlight`             | `object`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
-| `events`                | `object`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
-| `eventsTransitionProperty`                | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
-| `intersectionOptions`   | `object`  | ```{ root: null, threshold: 0, rootMargin: '0px' }```      | Object specifying the intersection properties ([See Viewport Intersection](#viewport-intersection)).
+| `highlight`             | `MwHighlightOptions`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
+| `events`                | `MwEventListeners`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
+| `eventsTransitionProperty` | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
+| `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
+| `intersectionOptions`   | `MwIntersectionObserverProperties`  | ```{ root: null, threshold: 0, rootMargin: '0px' }```      | Object specifying the intersection properties ([See Viewport Intersection](#viewport-intersection)).
 
 ## Methods
 | Method | Description |
 |--|--|
 | `start` | Starts the animation ([See Autostart](#autostart)).|
-| `pause` | Starts the animation ([See Pause](#pause)).|
+| `pause` | Pauses the animation ([See Pause](#pause)).|
 | `resume` | Resumes the animation ([See Resume](#resume)).|
-
 
 ## Events
 You can register events callbacks to be fired at different points of Movinword's lifecycle.
@@ -177,6 +174,11 @@ setTimeout(() => {
   mw.pause()
 }, 2000)
 ```
+
+Internally Movinwords will pause those css properties provided in `pausableProps`.
+By default, all transitions shipped with Movinwords target the *opacity* and *transform* css properties.
+
+If you create custom [transitions](#transitions) which target other css properties, be sure to provide them through `pausableProps`.
 
 ## Resume
 To resume (unpause) the animation you need to call the `resume()` method:
