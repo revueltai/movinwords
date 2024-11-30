@@ -61,6 +61,10 @@ select {
   padding: 5px 8px;
 }
 
+a {
+  text-decoration: none;
+}
+
 pre {
   position: absolute;
   overflow: auto;
@@ -72,8 +76,8 @@ pre {
   color: #0095D0;
   background-color: #0b0d1afa;
   line-height: .5;
+  transform: translate3d(0, 0, 0);
   -webkit-overflow-scrolling: touch;
-  -webkit-transform: translate3d(0, 0, 0);
 }
 
 pre code {
@@ -304,4 +308,8 @@ Example wrapper
 
 #ui-button-pause.visible {
   display: inline-block;
+}
+
+#word {
+  width: 100%;
 }
