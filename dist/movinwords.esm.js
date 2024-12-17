@@ -10,11 +10,12 @@ class Movinwords {
     __publicField(this, "_currentLetterIndex");
     __publicField(this, "_started");
     __publicField(this, "_paused");
-    __publicField(this, "_visible");
     __publicField(this, "_events");
     __publicField(this, "_eventNames");
     __publicField(this, "_classNames");
     __publicField(this, "_options");
+    __publicField(this, "_letterTransitionStartHandlers", /* @__PURE__ */ new Map());
+    __publicField(this, "_letterTransitionEndHandlers", /* @__PURE__ */ new Map());
     this._sentences = null;
     this._words = [];
     this._letters = [];
@@ -22,11 +23,14 @@ class Movinwords {
     this._currentLetterIndex = 1;
     this._started = false;
     this._paused = false;
-    this._visible = "--v";
     this._events = {};
     this._eventNames = [
       "start",
       "end",
+      "intersect",
+      "pause",
+      "resume",
+      "destroy",
       "wordTransitionStart",
       "wordTransitionEnd",
       "letterTransitionStart",
@@ -38,6 +42,7 @@ class Movinwords {
       "letterScrambleEnd"
     ];
     this._classNames = {
+      _visible: "--v",
       base: "mw",
       word: "mw-w",
       letter: "mw-l",
@@ -52,6 +57,7 @@ class Movinwords {
       duration: 1e3,
       delay: 100,
       offset: 20,
+      initialDelay: 0,
       animateLetters: false,
       reverseTransition: false,
       reverseOrder: false,
@@ -104,6 +110,33 @@ class Movinwords {
       }
     }
   }
+  _handleTransitionStart(event, payload) {
+    if (event.propertyName === this._options.eventsTransitionProperty) {
+      this._emitEvent("wordTransitionStart", payload);
+    }
+  }
+  _handleTransitionEnd(event, payload, word) {
+    if (event.propertyName === this._options.eventsTransitionProperty) {
+      this._emitEvent("wordTransitionEnd", payload);
+      if (word.textContent && this._isLastWordOfSentence(word.textContent)) {
+        this._emitEvent("end");
+      }
+    }
+  }
+  _addEventListeners(word, letterEl) {
+    const payload = {
+      word: {
+        el: word,
+        text: word.textContent
+      }
+    };
+    const transitionStartHandler = (event) => this._handleTransitionStart(event, payload);
+    const transitionEndHandler = (event) => this._handleTransitionEnd(event, payload, word);
+    this._letterTransitionStartHandlers.set(letterEl, transitionStartHandler);
+    this._letterTransitionEndHandlers.set(letterEl, transitionEndHandler);
+    letterEl.addEventListener("transitionstart", transitionStartHandler);
+    letterEl.addEventListener("transitionend", transitionEndHandler);
+  }
   _addEventListener(event, callback) {
     if (typeof event !== "string" || typeof callback !== "function") {
       return false;
@@ -124,6 +157,18 @@ class Movinwords {
       ...payload
     }));
   }
+  _removeLetterEventListeners(letterEl) {
+    const startHandler = this._letterTransitionStartHandlers.get(letterEl);
+    const endHandler = this._letterTransitionEndHandlers.get(letterEl);
+    if (startHandler) {
+      letterEl.removeEventListener("transitionstart", startHandler);
+      this._letterTransitionStartHandlers.delete(letterEl);
+    }
+    if (endHandler) {
+      letterEl.removeEventListener("transitionend", endHandler);
+      this._letterTransitionEndHandlers.delete(letterEl);
+    }
+  }
   _isAllowedEvent(eventName) {
     return this._eventNames.includes(eventName);
   }
@@ -141,7 +186,8 @@ class Movinwords {
   }
   _isLastWordOfSentence(wordStr) {
     let output = false;
-    for (let [index, word] of this._words.entries()) {
+    let words = this._options.reverseOrder ? this._words.reverse() : this._words;
+    for (let [index, word] of words.entries()) {
       if (wordStr === word && index + 1 === this._words.length) {
         output = true;
       }
@@ -166,7 +212,7 @@ class Movinwords {
     if (spacing) {
       return spacing;
     }
-    return type === "word" ? parseInt(window.getComputedStyle(sentence, null).getPropertyValue("font-size")) * 0.4 : 0;
+    return type === "word" ? Math.round(parseInt(window.getComputedStyle(sentence, null).getPropertyValue("font-size")) * 0.4) : 0;
   }
   _getWordsArray(sentence) {
     if (sentence.textContent) {
@@ -201,6 +247,10 @@ class Movinwords {
   _parseSentences() {
     if (this._sentences) {
       for (const sentence of this._sentences) {
+        if (sentence.textContent) {
+          sentence.dataset.originalSentence = sentence.textContent;
+          sentence.setAttribute("aria-label", sentence.textContent);
+        }
         this._setCSSVariables(sentence);
         this._createAndAppendWordTags(sentence);
         this._createAndAppendLetterTags(sentence);
@@ -208,9 +258,9 @@ class Movinwords {
           this._createScramble();
         }
         setTimeout(() => {
-          sentence.classList.add(this._visible);
+          sentence.classList.add(this._classNames._visible);
           delete sentence.dataset[this._classNames.base];
-        }, 100);
+        }, this._options.initialDelay);
       }
     }
   }
@@ -334,7 +384,7 @@ class Movinwords {
     for (const [index, letter] of letters.entries()) {
       const letterEl = this._createLetterElement(letter, letters, index, wordIndex);
       if (this._isLastLetterOfWord(index, letters.length)) {
-        this._addLetterEventListeners(word, letterEl);
+        this._addEventListeners(word, letterEl);
       }
       this._letters.push(letterEl);
       letterTagsArr.push(letterEl);
@@ -357,27 +407,6 @@ class Movinwords {
       }
     });
   }
-  _addLetterEventListeners(word, letterEl) {
-    const payload = {
-      word: {
-        el: word,
-        text: word.textContent
-      }
-    };
-    letterEl.addEventListener("transitionstart", (event) => {
-      if (event.propertyName === this._options.eventsTransitionProperty) {
-        this._emitEvent(`wordTransitionStart`, payload);
-      }
-    });
-    letterEl.addEventListener("transitionend", (event) => {
-      if (event.propertyName === this._options.eventsTransitionProperty) {
-        this._emitEvent(`wordTransitionEnd`, payload);
-        if (word.textContent && this._isLastWordOfSentence(word.textContent)) {
-          this._emitEvent("end");
-        }
-      }
-    });
-  }
   _triggerStart() {
     this._started = true;
     this._emitEvent("start");
@@ -389,7 +418,9 @@ class Movinwords {
       const observer = new IntersectionObserver((elements) => {
         elements.forEach((el) => {
           if (el.isIntersecting) {
+            this._emitEvent("intersect");
             this._triggerStart();
+            observer.disconnect();
           }
         });
       }, this._options.intersectionOptions);
@@ -413,6 +444,7 @@ class Movinwords {
         }
       });
       this._paused = true;
+      this._emitEvent("pause");
     }
   }
   resume() {
@@ -425,6 +457,7 @@ class Movinwords {
         }
       });
       this._paused = false;
+      this._emitEvent("resume");
     }
   }
   start() {
@@ -434,6 +467,47 @@ class Movinwords {
       } else {
         this._triggerStart();
       }
+    }
+  }
+  destroy() {
+    var _a;
+    if (this._sentences) {
+      this._emitEvent("destroy");
+      this._sentences.forEach((sentence) => {
+        sentence.querySelectorAll(`.${this._classNames.letter}`).forEach((letterEl) => this._removeLetterEventListeners(letterEl));
+        sentence.classList.remove(this._options.transition);
+        for (const [_, value] of Object.entries(this._classNames)) {
+          sentence.classList.remove(value);
+        }
+        sentence.style.removeProperty("--mw-word-spacing");
+        sentence.style.removeProperty("--mw-letter-spacing");
+        sentence.style.removeProperty("--mw-duration");
+        sentence.style.removeProperty("--mw-delay");
+        sentence.style.removeProperty("--mw-offset");
+        sentence.style.removeProperty("--mw-text-alignment");
+        if (sentence.dataset.originalSentence) {
+          sentence.textContent = sentence.dataset.originalSentence;
+          sentence.removeAttribute("data-original-sentence");
+          sentence.removeAttribute("aria-label");
+        }
+      });
+    }
+    if (typeof IntersectionObserver !== "undefined") {
+      const observer = new IntersectionObserver(() => {
+      });
+      (_a = this._sentences) == null ? void 0 : _a.forEach((el) => observer.unobserve(el));
+    }
+    this._sentences = null;
+    this._words = [];
+    this._currentLetterIndex = 1;
+    this._letters = [];
+    this._pausedProps = {};
+    this._paused = false;
+    this._started = false;
+    this._events = {};
+    this._options = {};
+    if (typeof window !== "undefined" && window.Movinwords) {
+      delete window.Movinwords;
     }
   }
 }
