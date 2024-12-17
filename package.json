@@ -19,10 +19,8 @@
   "unpkg": "dist/movinwords.umd.js",
   "scripts": {
     "prepare": "husky install",
-    "build:docs": "TARGET=docs vite build",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start:docs": "yarn build:docs && vite",
     "test": "vitest run --coverage",
     "test:watch": "vitest --coverage --watch"
   },

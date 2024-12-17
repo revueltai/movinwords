@@ -1,8 +1,6 @@
 /**
  * Configs:
- * - packageBuildConfig: Builds the package for Production (package.json, .css, .esm, .js, .umd, min.js and ts types).
- * - docsBuildConfig: Builds the dependencies for the docs playground (.min.js).
- * - docsRunConfig: Runs the docs playground (locally).
+ * - Builds the package for Production (package.json, .css, .esm, .js, .umd, min.js and ts types).
 */
 
 import path from 'path'
@@ -14,11 +12,6 @@ import type { PluginOption } from 'vite'
 import { execSync } from 'child_process'
 
 const entry = path.resolve(__dirname, 'src/movinwords.ts')
-const name = 'MovinWords'
-const minify = 'terser'
-const terserOptions = {
-  keep_classnames: true
-}
 
 /**
  * Vite plugin to run node-sass commands.
@@ -42,8 +35,10 @@ function compileScss(outputDir: string): PluginOption {
   }
 }
 
-// Configuration for building the package
-const packageBuildConfig = defineConfig({
+/**
+ * Configuration for building the package
+*/
+export default defineConfig({
   plugins: [
     compileScss('dist/'),
     visualizer() as PluginOption,
@@ -54,12 +49,14 @@ const packageBuildConfig = defineConfig({
     }),
   ],
   build: {
-    minify,
-    terserOptions,
+    minify: 'terser',
+    terserOptions: {
+      keep_classnames: true
+    },
     reportCompressedSize: true,
     lib: {
       entry,
-      name,
+      name: 'Movinwords',
       formats: ['es', 'cjs', 'iife', 'umd'],
       fileName: (format) => {
         let filename = 'movinwords'
@@ -86,40 +83,4 @@ const packageBuildConfig = defineConfig({
       },
     },
   },
-})
-
-// Configuration for building the docs
-const docsBuildConfig = defineConfig({
-  plugins: [
-    compileScss('docs/')
-  ],
-  build: {
-    minify,
-    terserOptions,
-    emptyOutDir: false,
-    outDir: path.resolve(__dirname, 'docs'),
-    lib: {
-      entry,
-      name,
-      formats: ['iife'],
-      fileName: () => 'movinwords.min.js',
-    },
-  },
-})
-
-// Configuration for running the docs
-const docsRunConfig = defineConfig({
-  root: path.join(__dirname, 'docs'),
-})
-
-export default defineConfig(({ command }) => {
-  if (command === 'serve') {
-    return docsRunConfig
-  }
-
-  if (process.env.TARGET === 'docs') {
-    return docsBuildConfig
-  }
-
-  return packageBuildConfig
 })
