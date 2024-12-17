@@ -1,5 +1,7 @@
 type MwCSSProperties = 'transform' | 'opacity'
 
+type MwScrambleMode = 'scramble' | 'unscramble'
+
 export interface MwIntersectionObserverProperties {
   root?: Element | null
   rootMargin?: string
@@ -10,15 +12,19 @@ export interface MwEventListeners {
   [key: string]: Record<string, Function> | { listeners: Function[] }
 }
 
+export type MwTextAlignment = 'left' | 'right' | 'center' | 'start' | 'end' | 'inherit' | 'initial'
+
 export type MwTransition = 'fadeIn' | 'slideInTop' | 'slideInBottom' | 'slideInLeft' | 'slideInRight' | 'revealInTop' | 'revealInBottom'
 
-export type MwEventName = 'start' | 'end' | 'wordTransitionStart' | 'wordTransitionEnd' | 'letterTransitionStart' | 'letterTransitionEnd'
+export type MwEventName = 'start' | 'end' | 'pause' | 'resume' | 'intersect' | 'destroy' | 'wordTransitionStart' | 'wordTransitionEnd' | 'letterTransitionStart' | 'letterTransitionEnd' | 'scrambleStart' | 'scrambleEnd' | 'letterScrambleStart' | 'letterScrambling' | 'letterScrambleEnd'
 
 export type MwClassNames = {
+  _visible: string
   base: string
   word: string
   letter: string
   reverse: string
+  textAlignment: string
   animateLetters: string
 }
 
@@ -31,6 +37,7 @@ export interface MwHighlightOptions {
 export interface MwOptions {
   el: string
   sentence?: string
+  initialDelay?: number
   autostart: boolean
   duration: number
   delay: number
@@ -40,6 +47,7 @@ export interface MwOptions {
   reverseOrder: boolean
   pausableProps: MwCSSProperties[]
   transition: MwTransition
+  textAlignment: MwTextAlignment
   wordSpacing: number | null
   letterSpacing: number | null
   highlight: MwHighlightOptions
@@ -47,6 +55,10 @@ export interface MwOptions {
   eventsTransitionProperty: string
   intersectionStart: boolean
   intersectionOptions: MwIntersectionObserverProperties
+  scrambleLetters: boolean
+  scrambleMode: MwScrambleMode
+  scrambleChars: string
+  scrambleFPS: number
 }
 
 export type MwWord = {

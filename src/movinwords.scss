@@ -12,6 +12,10 @@
     opacity: 1;
   }
 
+  &-ta {
+    text-align: var(--mw-text-alignment);
+  }
+
   .mw-w {
     --mw-offset-sanitized: calc(var(--mw-offset) * 1px);
     --mw-offset-sanitized-negative: calc(-1 * var(--mw-offset-sanitized));
