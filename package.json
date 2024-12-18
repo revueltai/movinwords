@@ -15,7 +15,8 @@
     ".": {
       "import": "./dist/movinwords.esm.js",
       "require": "./dist/movinwords.cjs",
-      "default": "./dist/movinwords.esm.js"
+      "default": "./dist/movinwords.esm.js",
+      "types": "./src/types/movinwords.d.ts"
     },
     "./styles": "./dist/movinwords.css"
   },

@@ -1,53 +1,56 @@
-![movinwords](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
+![Movinwords Logo](https://a.storyblok.com/f/99692/378x134/92e66ed413/logo.gif)
 
 # Movinwords
-A plugin to animate sentences, words and letters in many ways.
+Movinwords is a versatile plugin for animating sentences, words, and letters in various creative ways.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
 ## Playground
 
-Check out the playground [here](https://revueltai.github.io/movinwords/).
+Explore Movinword's capabilities in the [Playground](https://revueltai.github.io/movinwords/).
 
 ## Installation
 
+Install Movinwords using npm or yarn:
+
 ```sh
 npm install movinwords
-```
-or
-```sh
-yarn add movinwords
+# npx movinwords
+# pnpm add movinwords
+# yarn add movinwords
 ```
 
 ## Basic Usage
 
 #### HTML
 ```html
-<!-- Get Movinwords to animate a given sentence -->
+<!-- Static animated sentence -->
 <h1 class="my-sentence">I am an animated sentence.</h1>
+<!-- <h1 id="my-sentence">I am an animated sentence.</h1> -->
 
-<!-- Or you can provide the sentence dynamically (see below) -->
-<h1 class="my-injected-sentence"></h1>
+<!-- Dynamically provided sentence -->
+<h1 class="my-dynamic-sentence"></h1>
+<!-- <h1 id="my-dynamic-sentence"></h1> -->
 ```
 
-#### JS & CSS
+### JavaScript & CSS
 
-##### With a bundler
-```js
+#### Using a Framework or Bundler
+```javascript
 import Movinwords from 'movinwords';
-import 'movinwords/movinwords.css';
+import 'movinwords/styles';
 
-const sentence = new Movinwords({
-  el: '.my-sentence'
+const staticSentence = new Movinwords({
+  el: '.my-sentence',
 });
 
-const injectedSentence = new Movinwords({
-  el: '.my-injected-sentence',
-  sentence: 'Hello world, I am a sentence!'
+const dynamicSentence = new Movinwords({
+  el: '.my-dynamic-sentence',
+  sentence: 'I am a dynamic sentence!',
 });
 ```
 
-##### From a CDN
+##### Using a CDN
 ```html
 <link rel="stylesheet" href="https://unpkg.com/movinwords/dist/movinwords.css">
 <script src="https://unpkg.com/movinwords/dist/movinwords.min.js"></script>
@@ -59,51 +62,73 @@ const injectedSentence = new Movinwords({
     });
 
     const injectedSentence = new Movinwords({
-      el: '.my-injected-sentence',
-      sentence: 'Hello world, I am a sentence!'
+      el: '.my-dynamic-sentence',
+      sentence: 'I am a dynamic sentence!'
     });
   })();
 </script>
 ```
 
-## Instance Options
-| Option                  | Type      | Default                | Description                                                                                                                                                                                                                                                                                        |
-| ----------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `el`                    | `string`  | `null`             | **Required:** Sentence container element.
-| `sentence`              | `string`  | `''`               | Sentence you want to inject dynamically.
-| `initialDelay`          | `number`  | `1000`             | Initial delay of Movinword's start. ([See Offset](#initial-delay))
-| `duration`              | `number`  | `1000`             | Duration of the animation in milliseconds.
-| `delay`                 | `number`  | `100`              | Delay of the animation in milliseconds.
-| `offset`                | `number`  | `20`               | Offset value to use on slide/reveal transitions ([See Offset](#offset)).
-| `reverseTransition`     | `boolean` | `false`            | Reverses the transition animation ([See Reverse Transition](#reverse-transition)).
-| `reverseOrder`          | `boolean` | `false`            | Reverses the word's appearance order ([See Reverse Order](#reverse-order)).
-| `animateLetters`        | `boolean` | `false`            | Animates the individual letters of a sentence ([See Animate Letters](#animate-letters)).
-| `autostart`             | `boolean` | `true`             | Starts or stop the animation of the words on instance creation ([See Autostart](#autostart)).
-| `transition`            | `MwTransition`  | `fadeIn`           | Name of the css transition to use ([See Transitions](#transitions)).
-| `pausableProps`         | `MwCSSProperties[]`  | `['opacity','transform']` | Name of the css properties to be paused when pause is triggered ([See Pause](#pause)).
-| `wordSpacing`           | `number`  | `null`             | Space gap between each word. ([See Word Spacing](#word-spacing))
-| `letterSpacing`         | `number`  | `null`             | Space gap between each letter. ([See Letter Spacing](#letter-spacing))
-| `highlight`             | `MwHighlightOptions`  | ```{ classname: 'highlight', tag: 'strong', words: [] }```      | Object specifying which words should be highlighted and how ([See Highlight](#highlight)).
-| `textAlignment`                | `MwTextAlignment`  | `initial`               | Alignment of the texts inside sentences ([See Text Alignment](#text-alignment))
-| `events`                | `MwEventListeners`  | `{}`      | Object specifying callback functions for firing events ([See Events](#events)).
-| `eventsTransitionProperty` | `string`  | `opacity`      | Name of the transition property to be used to control transition events ([See Events and Transitions](#events-and-transitions)).
-| `scrambleLetters` | `boolean`  | `false`      | Scrambles or Unscrambles the letters in the sentence ([See Scramble Letters](#scramble-letters)).
-| `scrambleMode` | `MwScrambleMode`  | `unscramble`      | Modes that the scrambler can take ([See Scramble Letters](#scramble-letters)).
-| `scrambleChars` | `string`  | `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`      | Characters to show while scrambling ([See Scramble Letters](#scramble-letters)).
-| `scrambleFPS` | `number`  | `16`      | Speed of the scramble animation ([See Scramble Letters](#scramble-letters)).
-| `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)).
-| `intersectionOptions`   | `MwIntersectionObserverProperties`  | ```{ root: null, threshold: 0, rootMargin: '0px' }```      | Object specifying the intersection properties ([See Viewport Intersection](#viewport-intersection)).
+## Options
+Customize Movinwords with various configuration options:
+
+| Option                  | Type      | Default                | Description                                                                                                                                         |
+|-------------------------|-----------|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `el`                    | `string`  | `null`                 | **Required:** The element containing the sentence.                                                                                                  |
+| `sentence`              | `string`  | `''`                   | The sentence to animate dynamically.                                                                                                                |
+| `initialDelay`          | `number`  | `0`                    | The delay before animation starts, in milliseconds ([See Initial Delay](#initial-delay))                                                            |
+| `duration`              | `number`  | `1000`                 | The duration of the animation, in milliseconds.                                                                                                     |
+| `delay`                 | `number`  | `100`                  | The delay between word/letter animations, in milliseconds.                                                                                          |
+| `offset`                | `number`  | `20`                   | The offset for slide/reveal transitions ([See Offset](#offset)).                                                                                    |
+| `reverseTransition`     | `boolean` | `false`                | If true, reverses the animation transition ([See Reverse Transition](#reverse-transition)).                                                                                                        |
+| `reverseOrder`          | `boolean` | `false`                | If true, reverses the order of word/letter animations ([See Reverse Order](#reverse-order)).                                                                                             |
+| `animateLetters`        | `boolean` | `false`                | If true, animates individual letters ([See Animate Letters](#animate-letters)).                                                                                                              |
+| `autostart`             | `boolean` | `true`                 | If true, starts the animation on instance creation ([See Autostart](#autostart)).                                                                                                |
+| `transition`            | `MwTransition`  | `fadeIn`         | The transition effect to apply ([See Transitions](#transitions)).                                                                                                                    |
+| `pausableProps`         | `MwCSSProperties[]`  | `['opacity', 'transform']` | CSS properties to pause when animation is paused ([See Pause](#pause)).                                                                                                 |
+| `wordSpacing`           | `number`  | `null`                 | Custom spacing between words (in pixels) ([See Word Spacing](#word-spacing)).                                                   |
+| `letterSpacing`         | `number`  | `null`                 | Custom spacing between letters (in pixels) ([See Letter Spacing](#letter-spacing)).                                                 |
+| `highlight`                | `MwHighlightOptions`        | `{ classname: 'highlight', tag: 'strong', words: [] }` | Configuration to highlight specific words.                                                    |
+| `textAlignment`            | `MwTextAlignment`           | `initial`                      | The alignment of text inside the sentence (e.g., `left`, `center`, `right`).                    |
+| `events`                   | `MwEventListeners`          | `{}`                           | Callbacks for lifecycle events like `start`, `pause`, or `end`.                                 |
+| `eventsTransitionProperty` | `string`                    | `opacity`                      | The CSS property used to control transition-related events.                                      |
+| `scrambleLetters`          | `boolean`                   | `false`                        | Enables the scrambling or unscrambling of letters in the sentence ([See Scramble Letters](#scramble-letters)).  |
+| `scrambleMode`             | `MwScrambleMode`            | `unscramble`                   | The mode for scrambling letters (e.g., `scramble`, `unscramble`) ([See Scramble Letters](#scramble-letters)).  |
+| `scrambleChars`            | `string`                    | `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789` | The characters used during the scrambling process ([See Scramble Letters](#scramble-letters)). |
+| `scrambleFPS`              | `number`                    | `16`                           | The frames per second for the scrambling animation ([See Scramble Letters](#scramble-letters)). |
+| `intersectionStart`     | `boolean` | `false`            | Starts the animation when the element intersects the viewport ([See Viewport Intersection](#viewport-intersection)). |
+| `intersectionOptions`      | `MwIntersectionObserverProperties` | `{ root: null, threshold: 0, rootMargin: '0px' }` | Configuration for the viewport intersection behavior ([See Viewport Intersection](#viewport-intersection)). |
+
 
 ## Methods
+Movinwords provides methods for additional control:
+
 | Method | Description |
 |--|--|
 | `start` | Starts the animation ([See Autostart](#autostart)).|
 | `pause` | Pauses the animation ([See Pause](#pause)).|
 | `resume` | Resumes the animation ([See Resume](#resume)).|
-| `destroy` | Destroys the current Movinwords Instance ([See Destroy](#destroy)).|
+| `destroy` | Destroys the instance and cleans up all associated resources ([See Destroy](#destroy)).|
 
 ## Events
-You can register events callbacks to be fired at different points of Movinword's lifecycle.
+Movinwords emits events at key points in its lifecycle.
+Use these events to implement custom behavior:
+
+| Event Name            | Description                                             |
+|-----------------------|---------------------------------------------------------|
+| `start`               | Triggered when the animation starts.                   |
+| `end`                 | Triggered when the animation ends.                     |
+| `pause`               | Triggered when the animation is paused.                |
+| `resume`              | Triggered when the animation is resumed.               |
+| `destroy`             | Triggered when the instance is destroyed.              |
+| `wordTransitionStart` | Triggered at the start of a word transition.            |
+| `wordTransitionEnd`   | Triggered at the end of a word transition.              |
+| `scrambleStart`            | Triggered when the letters scrambler starts.                                 |
+| `scrambleEnd`              | Triggered when the letters scrambler ends.                                   |
+| `letterScrambleStart`      | Triggered when a letter scrambling starts.                                   |
+| `letterScrambling`         | Triggered when a letter scrambles.                                           |
+| `letterScrambleEnd`        | Triggered when a letter scrambling ends.                                     |
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -127,31 +152,19 @@ const mw = new Movinwords({
 })
 ```
 
-| Event Name | Description |
-|--|--|
-| `start` | Fires on Start of Movinwords |
-| `end` | Fires on End of Movinwords |
-| `pause` | Fires on Pause of Movinwords |
-| `resume` | Fires on Resume of Movinwords |
-| `destroy` | Fires on Movinwords instance destroy |
-| `wordTransitionStart` | Fires when a word transition starts |
-| `wordTransitionEnd` | Fires when a word transition ends |
-| `scrambleStart` | Fires when the letters scrambler starts |
-| `scrambleEnd` | Fires when the letters scrambler ends |
-| `letterScrambleStart` | Fires when a letter scrambling starts |
-| `letterScrambling` | Fires when a letter scrambles |
-| `letterScrambleEnd` | Fires when a letter scrambling ends |
-
 #### Events and Transitions:
-`wordTransitionStart` and `wordTransitionEnd` use Javascript's `transitionstart` and `transitionend` events under the hood to know when they need to fire. These last two fire for each CSS transition property declared (e.g: If a CSS transition uses opacity and transform, the events will fire twice).
+`wordTransitionStart` and `wordTransitionEnd` use JavaScript's `transitionstart` and `transitionend` events under the hood to determine when they need to fire.
+These events are triggered for each CSS transition property declared (e.g., if a CSS transition uses `opacity` and `transform`, the events will fire twice).
 
-To avoid this issue we have exposed the `eventsTransitionProperty` property.
-It expects the CSS transition name you want to use as 'filter' to focus on and exclude all other props:
+To avoid this issue, we have exposed the `eventsTransitionProperty` property.
+It expects the CSS transition property name you want to focus on (e.g., `'filter'`) and excludes all other properties:
+
 ```css
 .mw.slideInBottom .mw-l {
   opacity: 0;
   transition-property: opacity, transform;
 ```
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -162,20 +175,22 @@ const mw = new Movinwords({
 ```
 
 ## Autostart
-By default Movinwords will start as soon as you create the instance.
-But you can override this action and trigger the start action manually by passing `autostart: false` in the instance options, and using the `start()` method:
+By default, Movinwords will start as soon as you create the instance.
+
+However, you can override this behavior and trigger the start action manually by passing `autostart: false` in the instance options and using the `start()` method:
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
   autostart: false
 })
 
-// Triggers start after 2 seconds.
-setTimeout(() => mw.start(), 2000)
+setTimeout(() => mw.start(), 2000) // Triggers start after 2 seconds.
 ```
 
 ## Pause
 To pause an animation you can call the `pause()` method:
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -183,14 +198,14 @@ const mw = new Movinwords({
 })
 
 mw.start() // Triggers start
-
 setTimeout(() => mw.pause(), 2000) // Triggers a pause after 2 seconds
 ```
 
-Internally Movinwords will pause those css properties provided in `pausableProps`.
-By default, all transitions shipped with Movinwords target the *opacity* and *transform* css properties.
+Internally, Movinwords will pause the CSS properties listed in `pausableProps`.
+By default, all transitions provided by Movinwords target the *opacity* and *transform* properties.
 
-If you create custom [transitions](#transitions) which target other css properties, be sure to provide them through `pausableProps`.
+If you create custom [transitions](#transitions) that target other CSS properties, ensure to include them in `pausableProps`.
+
 
 ```js
 const mw = new Movinwords({
@@ -205,7 +220,8 @@ setTimeout(() => mw.pause(), 2000)
 ```
 
 ## Resume
-To resume (unpause) the animation you need to call the `resume()` method:
+To resume (unpause) the animation, simply call the `resume()` method:
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -213,13 +229,13 @@ const mw = new Movinwords({
 })
 
 mw.start() // Triggers start
-
 setTimeout(() => mw.pause(), 2000) // Triggers a pause after 2 seconds
 setTimeout(() => mw.resume(), 4000) // Resumes the animation after 4 seconds
 ```
 
 ## Destroy
-To destroy a Movinwords instance (including events, classes, etc) you need to call the `destroy()` method:
+To destroy a Movinwords instance (including events, classes, and other resources), call the `destroy()` method:
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -229,11 +245,11 @@ const mw = new Movinwords({
 mw.start() // Triggers start
 setTimeout(() => mw.destroy(), 2000) // Triggers the destroy after 2 seconds
 ```
-
-Note: After destroy finishes each original sentence (or the injected ones) will be placed in their respective container element.
+**Note:** After `destroy()` completes, each original sentence (or any injected ones) will be restored to their respective container elements.
 
 ## Initial Delay
-You can delay the start of a Movinwords instance by setting `initialDelay`.
+You can delay the start of a Movinwords instance by setting the `initialDelay` property.
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -242,6 +258,7 @@ const mw = new Movinwords({
 ```
 
 This is similar to doing:
+
 ```js
 const mw = new Movinwords({
   el: '.my-sentence',
@@ -253,7 +270,7 @@ setTimeout(() => mw.start(), 2000) // Delays the start of Movinwords by 2 second
 
 
 ## Transitions
-Movinwords ships with these css transitions to use:
+Movinwords comes with the following CSS transitions for use:
 
 | Name | Effect |
 |--|--|
@@ -273,21 +290,23 @@ new Movinwords({
 ```
 
 ## Offset
-You can define an offset value to be used with `slide` and `reveal` animations.
-This will tell Movinwords how offsetted the words should be from the baseline anchor point (0px).
+You can define an offset value for use with the `slide` and `reveal` animations.
+This value determines how far the words should be offset from the baseline anchor point (0px).
 
 ```js
 new Movinwords({
   el: '.my-sentence',
   transition: 'slideInLeft',
-  offset: 50 // Words will be 50px offset from the start (0px) and slide in from left to right
+  offset: 50 // Words will be offset by 50px from the start (0px) and slide in from left to right.
+
 })
 ```
 
 ## Reverse Transition
 You can reverse the transition animations.
-This will tell Movinwords to execute a reversed version of the transition you have defined.
-_Note: this property makes the transition names counterintuitive, as "In" transitions behave like "out" ones._
+This instructs Movinwords to execute the reversed version of the transition you have defined.
+
+**Note:** This property may make transition names seem counterintuitive, as "In" transitions will behave like "Out" transitions.
 
 ```js
 new Movinwords({
@@ -298,13 +317,14 @@ new Movinwords({
 ```
 
 ## Reverse Order
-You can reverse the order in which the words and/or letters appear/disappear.
-This will tell Movinwords to transition the words and/or letters in the opposite order (e.g: Last word of the sentence is the first to transition).
+You can reverse the order in which the words and/or letters appear or disappear.
+This will instruct Movinwords to transition the words and/or letters in the opposite order (e.g., the last word of the sentence will be the first to transition).
 
 ### Reverse Words Order
 ```html
 <h2 class="my-sentence">Hello lovely world!</h2>
 ```
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -325,7 +345,9 @@ new Movinwords({
 ```
 
 ## Word Spacing
-By default Movinwords will calculate the space between words based on the sentence's font size, but you can pass a value of your own to override this action:
+By default, Movinwords calculates the space between words based on the sentence's font size.
+However, you can provide your own value to override this default behavior:
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -334,7 +356,8 @@ new Movinwords({
 ```
 
 ## Letter Spacing
-You can provide a space between each letter:
+You can specify the space between each letter:
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -343,7 +366,8 @@ new Movinwords({
 ```
 
 ## Text Alignment
-You can set the text alignment each sentence will have:
+You can set the text alignment for each sentence:
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -352,10 +376,11 @@ new Movinwords({
 ```
 
 ## Highlight
-To highlight words you need to pass a `highlight` object in the instance options:
+To highlight words, pass a `highlight` object in the instance options:
 
 ```html
 <h1 class="my-sentence">Hello world! I am an animated sentence.</h1>
+
 ```
 ```js
 new Movinwords({
@@ -368,14 +393,14 @@ new Movinwords({
 })
 ```
 
-| Options | Type | Default | Description
-|--|--|--|--|
-| `classname` | `string` | `highlight` | Classname to append to the highlighted word tags
-| `tag` | `string` | `strong` | HTML tag we want the word to be wrapped-highlighted in
-| `words` | `array` | `[]` | Array containing the words that we want to highlight.
+| Options    | Type    | Default    | Description                                                            |
+|------------|---------|------------|------------------------------------------------------------------------|
+| `classname` | `string` | `highlight` | Class name to append to the highlighted word tags                   |
+| `tag`      | `string` | `strong`   | HTML tag to wrap the highlighted word                                 |
+| `words`    | `array`  | `[]`       | Array containing the words to highlight                               |
 
 ## Viewport Intersection
-You can define if you want to trigger Movinwords **only when the element is in the Viewport**.
+You can define whether you want to trigger Movinwords **only when the element is in the viewport**.
 
 ```js
 new Movinwords({
@@ -385,7 +410,7 @@ new Movinwords({
 ```
 
 Movinwords uses [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) behind the scenes.
-If you wish to modify the intersection properties you can provide `intersectionOptions` in the options:
+If you wish to modify the intersection properties, you can provide `intersectionOptions` in the instance options:
 
 ```js
 new Movinwords({
@@ -400,12 +425,13 @@ new Movinwords({
 ```
 
 ## Animate Letters
-By default Movinwords animates the words in a sentence.
-If you wish to animate each single letter in a word instead you can set `animateLetters` to `true`.
+By default, Movinwords animates the words in a sentence.
+If you wish to animate each individual letter in a word instead, set `animateLetters` to `true`.
 
 ```html
 <h2 class="my-sentence">Hello lovely world!</h2>
 ```
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -415,11 +441,12 @@ new Movinwords({
 ```
 
 ## Scramble Letters
-You can _Scramble_ or _Unscramble_ the letters in a sentence.
+You can `scramble` or `unscramble` the letters in a sentence.
 
 ```html
 <h2 class="my-sentence">Hello lovely world!</h2>
 ```
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -427,7 +454,8 @@ new Movinwords({
 })
 ```
 
-You can change the scrambler's mode to _scramble_ the letters:
+You can change the scrambler's mode to `scramble` the letters:
+
 ```js
 new Movinwords({
   el: '.my-sentence',
@@ -436,7 +464,7 @@ new Movinwords({
 })
 ```
 
-Set some more scrambling options to achieve different results:
+Set additional scrambling options to achieve different results:
 
 ```js
 new Movinwords({
@@ -447,7 +475,7 @@ new Movinwords({
 })
 ```
 
-You can also combine the scramble options with other Movinwords options for even more results:
+You can also combine the scramble options with other Movinwords features for even cooler results:
 
 ```js
 new Movinwords({
