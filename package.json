@@ -1,6 +1,6 @@
 {
   "name": "movinwords",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "author": "Ignacio 'Nacho' Revuelta - iamnacho.com",
   "description": "Add animation to your words and sentences.",
   "license": "MIT",
@@ -11,6 +11,15 @@
     "letters"
   ],
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/movinwords.esm.js",
+      "require": "./dist/movinwords.cjs",
+      "default": "./dist/movinwords.esm.js"
+    },
+    "./styles": "./dist/movinwords.css"
+  },
+  "sideEffects": false,
   "source": "src/movinwords.ts",
   "types": "src/types/movinwords.d.ts",
   "main": "dist/movinwords.cjs",
