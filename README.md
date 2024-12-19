@@ -7,7 +7,7 @@ Movinwords is a versatile plugin for animating sentences, words, and letters in 
 
 ## Playground
 
-Explore Movinword's capabilities in the [Playground](https://revueltai.github.io/movinwords/).
+Explore Movinword's capabilities in the [Playground](https://movinwords.vercel.app/).
 
 ## Installation
 
