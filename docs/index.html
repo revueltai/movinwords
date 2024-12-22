@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Movinwords</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta property="og:site_name" content="Movinwords" />
+  <meta property="og:url" content="https://github.com/revueltai/movinwords">
+  <meta property="og:title" content="Movinwords">
+  <meta property="og:description" content="Movinwords is a robust, lightweight JavaScript library designed for animating sentences, words, and letters.">
+  <meta property="og:image" content="https://a.storyblok.com/f/99692/600x315/e650aa1a75/movinwords.jpg">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://unpkg.com/movinwords/dist/movinwords.css">
+  <script src="https://unpkg.com/movinwords/dist/movinwords.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      new Movinwords({
+        el: '.heading',
+        transition: 'slideInBottom',
+        highlight: {
+          classname: 'highlight',
+          tag: 'strong',
+          words: ['Life']
+        }
+      })
+
+      new Movinwords({
+        el: '.description',
+        transition: 'slideInTop',
+        initialDelay: 1000,
+      })
+    })
+  </script>
+</head>
+
+<body>
+
+  <section class="hero__wrapper">
+    <div>
+      <div class="head">
+        <div class="label">
+          <strong>We moved!</strong> Checkout the new <a href="https://movinwords.vercel.app/">Playground site</a>.
+        </div>
+
+        <img class="logo" src="https://a.storyblok.com/f/99692/x/1e8aea55ab/movinwords-logo.svg" alt="Movinwords">
+      </div>
+
+      <div class="hero__content">
+        <h1 class="heading">
+          Bring Texts to Life
+        </h1>
+
+        <p class="description">
+          Movinwords is a robust, lightweight JavaScript library designed <br />for animating sentences, words, and letters.
+        </p>
+      </div>
+    </div>
+
+    <a class="cta" href="https://movinwords.vercel.app" target="_blank">
+      Get Started
+    </a>
+  </section>
+
+  <footer>
+    <div class="footer__wrapper">
+      <div class="footer__left">
+        <a href="https://iamnacho.com" target="_blank">
+          <img alt="I Am Nacho" loading="lazy" width="48" height="37" decoding="async" data-nimg="1" style="color:transparent" src="https://movinwords.vercel.app/logoFooter.svg">
+        </a>
+
+        <p class="copyright">Designed and Developed by <a href="https://iamnacho.com" target="_blank">iamnacho</a>.<br>Published under <a href="https://github.com/revueltai/movinwords/blob/main/LICENSE" target="_blank">MIT License</a>.</p>
+      </div>
+
+      <a href="https://github.com/revueltai/movinwords" target="_blank">
+        <svg class="logo_github" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+          <path d="M12.0099 0C5.36875 0 0 5.49998 0 12.3042C0 17.7432 3.43994 22.3472 8.21205 23.9767C8.80869 24.0991 9.02724 23.7119 9.02724 23.3862C9.02724 23.1009 9.00757 22.1232 9.00757 21.1044C5.6667 21.8379 4.97099 19.6377 4.97099 19.6377C4.43409 18.2117 3.63858 17.8452 3.63858 17.8452C2.54511 17.0914 3.71823 17.0914 3.71823 17.0914C4.93117 17.1729 5.56763 18.3544 5.56763 18.3544C6.64118 20.2284 8.37111 19.6989 9.06706 19.3729C9.16638 18.5784 9.48473 18.0284 9.82275 17.7229C7.15817 17.4377 4.35469 16.3784 4.35469 11.6522C4.35469 10.3077 4.8316 9.20771 5.58729 8.35222C5.46807 8.04672 5.0504 6.78347 5.70677 5.09273C5.70677 5.09273 6.72083 4.76673 9.00732 6.35572C9.98625 6.08639 10.9958 5.94938 12.0099 5.94823C13.024 5.94823 14.0577 6.09097 15.0123 6.35572C17.299 4.76673 18.3131 5.09273 18.3131 5.09273C18.9695 6.78347 18.5515 8.04672 18.4323 8.35222C19.2079 9.20771 19.6652 10.3077 19.6652 11.6522C19.6652 16.3784 16.8617 17.4172 14.1772 17.7229C14.6148 18.1099 14.9924 18.8432 14.9924 20.0044C14.9924 21.6544 14.9727 22.9787 14.9727 23.3859C14.9727 23.7119 15.1915 24.0991 15.7879 23.9769C20.56 22.3469 23.9999 17.7432 23.9999 12.3042C24.0196 5.49998 18.6312 0 12.0099 0Z" />
+        </svg>
+      </a>
+    </div>
+  </footer>
+</body>
+
+</html>
