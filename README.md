@@ -5,9 +5,18 @@ Movinwords is a versatile plugin for animating sentences, words, and letters in 
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/revueltai/movinwords/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/movinwords)](https://img.shields.io/npm/v/movinwords)
 
-## Playground
+## Playgrounds
 
-Explore Movinword's capabilities in the [Playground](https://movinwords.vercel.app/).
+Explore Movinwords capabilities in the [Playground](https://movinwords.vercel.app/).
+
+Movinwords is also available for your favorite Frameworks!
+
+[![Vue](https://a.storyblok.com/f/99692/80x80/38a9ffe002/vue.png)](https://stackblitz.com/edit/movinwords-vue)
+[![React](https://a.storyblok.com/f/99692/80x80/2162faf2ae/react.png)](https://stackblitz.com/edit/movinwords-react)
+[![Nuxt](https://a.storyblok.com/f/99692/80x80/1ee8d02e68/nuxt.png)](https://stackblitz.com/edit/movinwords-nuxt)
+[![Next](https://a.storyblok.com/f/99692/80x80/3d5e4cb32d/next.png)](https://stackblitz.com/edit/movinwords-next)
+[![Svelte](https://a.storyblok.com/f/99692/80x80/316e3ea903/svelte.png)](https://stackblitz.com/edit/movinwords-svelte)
+[![Angular](https://a.storyblok.com/f/99692/80x80/2a2726dabb/angular.png)](https://stackblitz.com/edit/movinwords-angular)
 
 ## Installation
 
@@ -485,3 +494,11 @@ new Movinwords({
   animateLetters: true // The letters will have an animation
 })
 ```
+
+---
+
+#### Like Movinwords, but you want to animate HTML blocks instead? 
+## [Try Movinblocks!](https://github.com/revueltai/movinblocks)
+It's another lightweight plugin I created, designed for animating divs, headers, footers, sections, buttons, and more in a seamless timeline sequence. 
+
+[Give it a go!](https://github.com/revueltai/movinblocks)
